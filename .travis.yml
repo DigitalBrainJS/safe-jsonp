@@ -1,0 +1,12 @@
+sudo: false
+language: node_js
+node_js:
+  - "6"
+  - "7"
+  - "8"
+  - "9"
+before_script:
+  - npm run build
+  - npm install testem -g
+script:
+  - npm run test

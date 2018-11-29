@@ -8,20 +8,14 @@ import {
     randomStr
 } from "./lib/utils";
 
-
-
 import {parseURL} from './lib/browser';
 
 import _fetch from './lib/fetch';
 
 import Sandbox from './lib/sandbox';
 
-const hostNode = document.head;
-
-
-const registerKey= generateUniquePropName(global, (i)=>'_jsonp' +randomStr(3 + i/10));
-
-const internalRegister= {},
+const registerKey= generateUniquePropName(global, (i)=>'_jsonp' +randomStr(3 + i/10)),
+    internalRegister= {},
     register= Object.create(internalRegister);
 
 Object.defineProperty(global, registerKey, {
@@ -31,20 +25,10 @@ Object.defineProperty(global, registerKey, {
     }
 });
 
-
-
 console.log('registerKey',  registerKey);
-
-
-
 
 export default function JSONP(url, options, callback){
     const request= (url, options, callback)=> {
-
-        testValueType('url', url, ['string'], callback);
-        testValueType('options', options, ['object', 'undefined'], callback);
-        testValueType('callback', callback, ['function']);
-
         let {
             sandbox,
             timeout,
@@ -81,11 +65,16 @@ export default function JSONP(url, options, callback){
         }
     };
 
-    return ((url, options, callback) => callback ? request(url, options, callback) : new Promise((resolve, reject) => {
-                request(url, options, (err, data) => err ? reject(err) : resolve(data))
-            })
-    ).apply(this, typeof options == 'function' ? [url, null, options] : [url, options, callback]);
+    return ((url, options, callback)=>{
+        testValueType('url', url, ['string']);
+        testValueType('options', options, ['object', 'undefined']);
+        testValueType('callback', callback, ['function', 'undefined']);
 
+        return callback? request(url, options, callback) : new Promise((resolve, reject)=> {
+            request(url, options, (err, data) => err ? reject(err) : resolve(data))
+        })
+
+    }).apply(this, typeof options==='function'? [url, null, options] : [url, options, callback]);
 }
 
 Object.assign(JSONP, {

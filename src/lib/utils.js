@@ -66,9 +66,13 @@ export const testValueType = (name, value, types, fn) => {
         }else{
             throw error;
         }
-        return true;
+
     }
+
+    return true;
 };
+
+
 
 export function parseParams(rawParams, params = {}){
     if(rawParams) {

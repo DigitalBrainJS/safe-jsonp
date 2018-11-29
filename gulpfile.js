@@ -97,41 +97,22 @@ function createBuildTask(entryFile, buildOptions) {
 
 gulp.task('webserver', function() {
     connect()
-    //.use(require('connect-livereload')())
         .use(serveStatic('./'))
+        .use(serveStatic('./public'))
         .use(serveStatic('./dist'))
         .use(serveStatic('./src'))
         .use(serveStatic('./test'))
-        .use(serveStatic('./public'))
-
         .listen(PORT);
 
     console.log(`Server listening on http://localhost:${PORT}`);
 });
 
-/*gulp.task('build-client', [
-    createBuildTask('src/graph.js', {name: 'Graph'})
-]);
-
-gulp.task('build-server', [
-    createBuildTask('src/server.js', {format: 'cjs'})
-]);*/
-
 const clientBuildTask= createBuildTask('src/jsonp.client.js', {exportName: 'JSONP', minify: false});
 const serverBuildTask= createBuildTask('src/jsonp.node.js', {format: 'cjs'});
-
 
 gulp.task('build', [clientBuildTask, serverBuildTask]);
 
 let spawned_process= null;
-
-/*gulp.task('build:server', function(){
-    gulp.src('src/server.js')
-        .pipe(gulp_babel({
-            plugins: ['transform-es2015-modules-commonjs']
-        }))
-        .pipe(gulp.dest(DIST_DIR + '/'))
-});*/
 
 gulp.task('kill-server', function(){
     if(spawned_process){
@@ -149,11 +130,7 @@ gulp.task('run-server-sandbox',function(){
         console.log(`Child exited with code ${code}`);
     });
 
-/*    process.on('exit', function() {
-        spawned_process.kill();
-    });*/
 });
-
 
 gulp.task('dev', function (done) {
     isDevMode= true;
@@ -162,7 +139,6 @@ gulp.task('dev', function (done) {
         console.log('File watcher started');
         gulp.watch('./src/**/*.js', ['kill-server', 'build', 'run-server-sandbox'], function (file) {
             console.log(`File [${file.path}] has been changed`);
-
         });
 
         gulp.watch('./test/*.js', ['kill-server', 'run-server-sandbox'], function(file){
