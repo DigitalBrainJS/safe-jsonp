@@ -5,6 +5,8 @@ node_js:
   - "7"
   - "8"
   - "9"
+env:
+  - NODE_ENV=TEST
 before_script:
   - npm run build
   - npm install testem -g

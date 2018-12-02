@@ -34,11 +34,11 @@ export default function fetch(url, options, callback) {
         };
 
     let {
-        timeout = 5000,
+        timeout = 15000,
         registerKey = '__jp',
         register = window[registerKey] || (window[registerKey] = {}),
         params = {},
-        callbackParam: cbParam,
+        cbParam,
         preventCache
     } = options || {};
 
@@ -91,11 +91,15 @@ export default function fetch(url, options, callback) {
         }
     };
 
+    console.log(query);
+
     script.src = url + (query ? '?' + query : '');
 
     console.log(script.src);
 
     targetNode.appendChild(script);
+
+    return () => done('aborted');
 };
 
 

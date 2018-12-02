@@ -34,7 +34,7 @@ export default function Sandbox(options) {
 
     let {
         origin,
-        idleTimeout= 5000
+        idleTimeout
     }= options || {};
 
     origin && (sandboxes[origin]= sandbox);
@@ -72,38 +72,42 @@ export default function Sandbox(options) {
             timer = null;
         }
 
-        const key = generateUniquePropName(queries, () => randomStr(10));
+        const key = generateUniquePropName(queries, () => randomStr(10)),
+            sendData = (data) => {
+                onready(() => iframe.contentWindow.postMessage(JSON.stringify(Object.assign({key}, data)), "*"));
+            };
 
         console.log(key);
 
-        queries[key]= true;
+        queries[key]= function(){
+            onready(()=>sendData({abort: true}));
+        };
 
         window.addEventListener("message", function handler(e) {
 
-            const dataObject = JSON.parse(e.data);
+            const response = JSON.parse(e.data);
 
-            if (dataObject.key === key) {
+            if (response.key === key) {
                 delete queries[key];
 
                 window.removeEventListener("message", handler, false);
 
                 if (!Object.keys(queries).length) {
-                    timer = setTimeout(() => {
+                    idleTimeout && (timer = setTimeout(() => {
                         timer = null;
                         destroy();
-                    }, idleTimeout) ;
-
+                    }, idleTimeout));
                 }
 
                 try {
-                    callback.call(sandbox, null, dataObject.data);
+                    callback.call(sandbox, null, response.data);
                 } catch (e) {
                     callback.call(sandbox, e.message);
                 }
             }
         }, false);
 
-        onready(()=>iframe.contentWindow.postMessage(JSON.stringify({key, data}), "*"));
+        onready(()=>sendData({data}));
 
         return key;
     };
@@ -121,10 +125,7 @@ Object.assign(Sandbox, {
         const {origin}= parseURL(data.url);
 
         return (origin && sandboxes[origin] || new Sandbox({origin})).query(data, callback);
-    }
+    },
+
+    isSupported: typeof window.postMessage=='function'
 });
-
-
-
-
-//

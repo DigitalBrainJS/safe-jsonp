@@ -107,8 +107,8 @@ gulp.task('webserver', function() {
     console.log(`Server listening on http://localhost:${PORT}`);
 });
 
-const clientBuildTask= createBuildTask('src/jsonp.client.js', {exportName: 'JSONP', minify: false});
-const serverBuildTask= createBuildTask('src/jsonp.node.js', {format: 'cjs'});
+const clientBuildTask= createBuildTask('src/safe-jsonp.client.js', {exportName: 'JSONP', minify: false});
+const serverBuildTask= createBuildTask('src/safe-jsonp.node.js', {format: 'cjs'});
 
 gulp.task('build', [clientBuildTask, serverBuildTask]);
 

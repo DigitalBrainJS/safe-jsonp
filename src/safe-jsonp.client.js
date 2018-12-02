@@ -31,50 +31,64 @@ export default function JSONP(url, options, callback){
     const request= (url, options, callback)=> {
         let {
             sandbox,
+            idleTimeout,
             timeout,
             preventCache,
-            callbackKey,
+            cbParam,
             params
-        } = options || {};
+        } = options;
 
         let {origin, pathname, search}= parseURL(url),
             urlParams= parseParams(search.slice(1));
 
         const computedParams= Object.assign(urlParams, params || null),
-            _url= origin + pathname;
+            _url= origin + pathname,
+            wrappedCallback= (err, data)=> callback(err && typeof err!=='object'? Error(err) : err, data);
 
+        if (sandbox && !Sandbox.isSupported) {
+            if (sandbox === true) return wrappedCallback("sandbox is not supported");
+            sandbox = false;
+        }
 
         if(sandbox){
             Sandbox.query({
                 url: _url,
                 options: {
                     params: computedParams,
-                    timeout
+                    timeout,
+                    cbParam,
+                    idleTimeout,
+                    preventCache
                 }
-            }, (err, response)=> err ? callback("sandbox error") : callback(response.err, response.data))
+            }, (err, response)=> err ? wrappedCallback("sandbox error") : wrappedCallback(response.err, response.data))
 
         }else{
             return _fetch(_url, {
                 timeout,
                 preventCache,
                 params: computedParams,
-                callbackKey,
+                cbParam,
                 registerKey,
                 register
-            }, callback);
+            }, wrappedCallback);
         }
     };
 
-    return ((url, options, callback)=>{
+    return ((url, options= {}, callback)=>{
         testValueType('url', url, ['string']);
-        testValueType('options', options, ['object', 'undefined']);
+        testValueType('options', options, ['object']);
         testValueType('callback', callback, ['function', 'undefined']);
+
+        testValueType('options.sandbox', options.sandbox, ['boolean', 'undefined']);
+        testValueType('options.params', options.params, ['object', 'undefined']);
+        testValueType('options.timeout', options.timeout, ['number', 'undefined']);
+        testValueType('options.cbParam', options.cbParam, ['string', 'undefined']);
 
         return callback? request(url, options, callback) : new Promise((resolve, reject)=> {
             request(url, options, (err, data) => err ? reject(err) : resolve(data))
         })
 
-    }).apply(this, typeof options==='function'? [url, null, options] : [url, options, callback]);
+    }).apply(this, typeof options==='function'? [url, undefined, options] : [url, options, callback]);
 }
 
 Object.assign(JSONP, {

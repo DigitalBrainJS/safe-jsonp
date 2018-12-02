@@ -56,8 +56,8 @@ export const testValueType = (name, value, types, fn) => {
 
     if (!~types.indexOf(realType)) {
         const error= TypeError(
-            name + ' should be ' + (types.length ? (r.test(types[0])? 'an ' : 'a ') + types[0] : types.join('|')) +
-            ', not ' + (r.test(realType)? 'an ' : 'a ') + realType
+            `${name} should be ${r.test(types[0])? 'an' : 'a'} ${types.join('|')},` +
+            ` not ${r.test(realType)? 'an' : 'a'} ${realType}`
         );
 
         if(fn){
