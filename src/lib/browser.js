@@ -2,18 +2,7 @@
 export const parseURL= typeof URL!='undefined'? (url)=>new URL(url, window.location.href) : (url)=>{
     let a = document.createElement("a");
     a.href = url;
-
-    return {
-        href: a.href,
-        protocol: a.protocol,
-        host: a.host,
-        hostname: a.hostname,
-        port: a.port,
-        pathname: a.pathname,
-        hash: a.hash,
-        search: a.search,
-        origin: a.origin
-    }
+    return Object.assign({}, a);
 };
 
 export function onDOMReady(callback){
