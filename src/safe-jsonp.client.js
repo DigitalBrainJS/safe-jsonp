@@ -89,6 +89,8 @@ export default function JSONP(url, options, callback){
                 instance.abort = abortQuery;
 
                 abortable && (options.abort = abortQuery);
+
+                return instance;
             };
 
         return callback ? request(callback) : new Promise((resolve, reject) => {

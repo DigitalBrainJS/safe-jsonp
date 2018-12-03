@@ -16,10 +16,10 @@ describe('JSONP: local server API request', function() {
         expect(result).to.be.an.instanceof(Promise);
     });
 
-    it('should return abort function if called with callback function', function() {
+    it('should return JSONP instance if called with callback function', function () {
         const result= JSONP(JSONP_API_VALID, (err, data)=>{});
 
-        expect(result).to.be.an.instanceof(Function);
+        expect(result).to.be.an.instanceof(JSONP);
     });
 
     it('should pass stress test', function(done) {

@@ -6,13 +6,6 @@ export default function proxy(){
         window.parent.postMessage(JSON.stringify(data), "*");
     }
 
-/*
-    window.addEventListener("error", function(){
-        console.log(arguments);
-    });
-*/
-
-
     window.addEventListener("message", (e)=>{
         let key, data;
 

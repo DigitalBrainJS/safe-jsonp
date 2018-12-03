@@ -81,7 +81,7 @@ export default function fetch(url, options, callback) {
 
     script = document.createElement('script');
     script.type = 'text/javascript';
-    script.onerror = () => done('internal');
+    script.onerror = () => done('network');
     script.onload = completeHandler;
 
     script.onreadystatechange = function () {
