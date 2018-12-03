@@ -16,7 +16,7 @@ export const parseURL = typeof URL != 'undefined' ? (url) => new URL(url, window
 
 export function onDOMReady(callback) {
     let s = document.readyState;
-    
+
     if (s == 'interactive' || s == 'complete') {
         callback();
     } else {

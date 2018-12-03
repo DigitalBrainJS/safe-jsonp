@@ -42,7 +42,7 @@ export default function Sandbox(options) {
     iframe.setAttribute('sandbox', 'allow-scripts');
     iframe.style.display = 'none';
 
-    let isReady = false, readyHandlers= [], timer;
+    let isReady = false, readyHandlers = [], idleTimer;
 
     iframe.addEventListener('load', function onReady() {
         iframe.removeEventListener('load', onReady);
@@ -67,49 +67,54 @@ export default function Sandbox(options) {
 
     sandbox.query= (data, callback)=> {
 
-        if (timer) {
-            clearTimeout(timer);
-            timer = null;
+        if (idleTimer) {
+            clearTimeout(idleTimer);
+            idleTimer = null;
         }
 
         const key = generateUniquePropName(queries, () => randomStr(10)),
+            messageHandler = (e) => {
+
+                const response = JSON.parse(e.data);
+
+                if (response.key === key) {
+                    delete queries[key];
+                    window.removeEventListener("message", messageHandler, false);
+
+                    if (!Object.keys(queries).length) {
+                        idleTimeout && (idleTimer = setTimeout(() => {
+                            idleTimer = null;
+                            destroy();
+                        }, idleTimeout));
+                    }
+
+                    try {
+                        callback.call(sandbox, null, response.data);
+                    } catch (e) {
+                        callback.call(sandbox, e.message);
+                    }
+                }
+            },
             sendData = (data) => {
                 onready(() => iframe.contentWindow.postMessage(JSON.stringify(Object.assign({key}, data)), "*"));
             };
 
         console.log(key);
 
-        queries[key]= function(){
-            onready(()=>sendData({abort: true}));
-        };
+        queries[key] = true;
 
-        window.addEventListener("message", function handler(e) {
-
-            const response = JSON.parse(e.data);
-
-            if (response.key === key) {
-                delete queries[key];
-
-                window.removeEventListener("message", handler, false);
-
-                if (!Object.keys(queries).length) {
-                    idleTimeout && (timer = setTimeout(() => {
-                        timer = null;
-                        destroy();
-                    }, idleTimeout));
-                }
-
-                try {
-                    callback.call(sandbox, null, response.data);
-                } catch (e) {
-                    callback.call(sandbox, e.message);
-                }
-            }
-        }, false);
+        window.addEventListener("message", messageHandler, false);
 
         onready(()=>sendData({data}));
 
-        return key;
+        let isAbortSent;
+
+        return () => {
+            if (!isAbortSent) {
+                isAbortSent = true;
+                onready(() => sendData({abort: true}));
+            }
+        };
     };
 
     iframe.src = "data:text/html;charset=utf-8," +

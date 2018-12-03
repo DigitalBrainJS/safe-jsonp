@@ -28,6 +28,8 @@ Object.defineProperty(global, registerKey, {
 console.log('registerKey',  registerKey);
 
 export default function JSONP(url, options, callback){
+    const globalPromise = Promise;
+
     return (function (url, options = {}, callback) {
         testValueType('url', url, ['string']);
         testValueType('options', options, ['object']);
@@ -38,18 +40,19 @@ export default function JSONP(url, options, callback){
         testValueType('options.timeout', options.timeout, ['number', 'undefined']);
         testValueType('options.cbParam', options.cbParam, ['string', 'undefined']);
 
-        const instance = this,
-            request = (url, options, callback) => {
-                let {
-                    sandbox,
-                    idleTimeout,
-                    timeout,
-                    preventCache,
-                    cbParam,
-                    abortable,
-                    params
-                } = options;
+        let {
+            sandbox,
+            idleTimeout,
+            timeout,
+            preventCache,
+            cbParam,
+            abortable,
+            Promise = globalPromise,
+            params
+        } = options;
 
+        const instance = this,
+            request = (callback) => {
                 let {origin, pathname, search} = parseURL(url),
                     urlParams = parseParams(search.slice(1));
 
@@ -88,11 +91,12 @@ export default function JSONP(url, options, callback){
                 abortable && (options.abort = abortQuery);
             };
 
-        return callback? request(url, options, callback) : new Promise((resolve, reject)=> {
-            request(url, options, (err, data) => err ? reject(err) : resolve(data))
+        return callback ? request(callback) : new Promise((resolve, reject) => {
+            request((err, data) => err ? reject(err) : resolve(data))
         })
 
-    }).apply(this instanceof JSONP ? this : Object.create(JSONP.prototype), typeof options === 'function' ? [url, undefined, options] : [url, options, callback]);
+    }).apply(this instanceof JSONP ? this : Object.create(JSONP.prototype), typeof options === 'function' ?
+        [url, undefined, options] : [url, options, callback]);
 }
 
 Object.assign(JSONP, {

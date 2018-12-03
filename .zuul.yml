@@ -1,5 +1,7 @@
 ui: tape
 browsers:
+  - name: microsoftedge
+    version: latest
   - name: chrome
     version: 26..latest
   - name: firefox
