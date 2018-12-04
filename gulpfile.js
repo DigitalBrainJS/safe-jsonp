@@ -18,6 +18,7 @@ const connect = require('connect'); // Webserver
 const serveStatic = require('serve-static');
 const child_process= require('child_process');
 
+
 const PORT= 3000;
 
 let isDevMode= false;
@@ -109,6 +110,10 @@ gulp.task('webserver', function() {
 
 const clientBuildTask= createBuildTask('src/safe-jsonp.client.js', {exportName: 'JSONP', minify: false});
 const serverBuildTask= createBuildTask('src/safe-jsonp.node.js', {format: 'cjs'});
+const testBuildTask = createBuildTask('test/safe-jsonp.spec.js', {
+    format: 'cjs',
+    destPath: path.resolve(DIST_DIR, '/test')
+});
 
 gulp.task('build', [clientBuildTask, serverBuildTask]);
 
@@ -132,16 +137,34 @@ gulp.task('run-server-sandbox',function(){
 
 });
 
+const shellTask = (name, command) => {
+    gulp.task(name, function (done) {
+        spawned_process = child_process.exec(command, {
+            //'execArgv': ['inspect']
+        });
+
+        spawned_process.on('exit', (code) => {
+            console.log(`Child proccess for ${name} exited with code ${code}`);
+            code ? done(new Error(`Process exit code ${code}`)) : done();
+        });
+    });
+
+    return name;
+};
+
+const npmBuildTest = shellTask('npm:test:build', 'npm run test:build');
+
+
 gulp.task('dev', function (done) {
     isDevMode= true;
 
-    runSequence(['build', 'webserver'], 'run-server-sandbox', function(){
+    runSequence(['build', 'webserver'], npmBuildTest, 'run-server-sandbox', function () {
         console.log('File watcher started');
-        gulp.watch('./src/**/*.js', ['kill-server', 'build', 'run-server-sandbox'], function (file) {
+        gulp.watch('./src/**/*.js', ['kill-server', 'build', npmBuildTest, 'run-server-sandbox'], function (file) {
             console.log(`File [${file.path}] has been changed`);
         });
 
-        gulp.watch('./test/*.js', ['kill-server', 'run-server-sandbox'], function(file){
+        gulp.watch('./test/**/*.js', ['kill-server', npmBuildTest, 'run-server-sandbox'], function (file) {
             console.log(`File [${file.path}] has been changed`);
         })
     });

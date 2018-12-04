@@ -1,12 +1,13 @@
 {
   "name": "safe-jsonp",
   "version": "0.0.1",
-  "description": "sandboxed jsonp client with promise support",
+  "description": "sandboxed jsonp client with Promise support",
   "author": "Dmitriy Mozgovoy",
   "main": "index.js",
-  "browser": "./dist/jsonp.client.js",
+  "browser": "./dist/safe-jsonp.client.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/safe-jsonp.spec.js --ui bdd --reporter spec",
+    "test:build": "browserify test/safe-jsonp.spec.js>dist/safe-jsonp.spec.js",
     "build": "gulp build",
     "watch": "gulp watch",
     "dev": "gulp dev",
@@ -55,10 +56,15 @@
     "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-resolve": "^3.4.0",
     "run-sequence": "^2.2.1",
-    "serve-static": "^1.13.2",
-    "zuul": "^3.12.0"
+    "serve-static": "^1.13.2"
   },
-  "dependencies": {
-    "babel-polyfill": "^6.26.0"
+  "testling": {
+    "harness": "mocha-bdd",
+    "files": "test/jsonp.spec.js",
+    "browsers": [
+      "ie/8..latest",
+      "chrome/latest",
+      "firefox/latest"
+    ]
   }
 }

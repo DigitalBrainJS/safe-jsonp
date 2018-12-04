@@ -25,11 +25,11 @@ export default function fetch(url, options, callback) {
 
             wasCalled = true;
             if (!length) {
-                done("JSONP callback was called without data argument");
+                done("data argument is missing");
             } else if (length > 1) {
                 done("too many arguments were passed to the JSONP callback");
             } else {
-                done(null, data);
+                typeof data == 'object' ? done(null, data) : done('invalid data argument type');
             }
         };
 
