@@ -14,8 +14,8 @@ $ npm install safe-jsonp --save
 ```
 ## API
 
-### jsonp(url: String, [options: Object]): Promise
-### jsonp(url: String, [options: Object], fn: Function): JSONP
+### JSONP(url: String, [options: Object]): \<Promise>
+### JSONP(url: String, [options: Object], fn: Function): \<JSONP>
 
   - `url: String` url to fetch
   - `[options: Object]` [optional]
@@ -54,7 +54,7 @@ JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da')
 Callback style:
 ```
 JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
-    (data, err) => {
+    (err, data) => {
         if(err){
             console.warn('Oops...we got an error', err.message)
         }else{
@@ -73,7 +73,7 @@ JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da', {sandbox: true})
 aborting the request:
 ```
 const jsonp= JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
-    (data, err) => {
+    (err, data) => {
         console.log(err) //Error: aborted  
     })
     
@@ -92,3 +92,4 @@ JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da', sharedOptions)
 ## License
 
 Copyright (c) 2018 Dmitriy Mozgovoy
+robotshara@gmail.com
