@@ -19,18 +19,18 @@ $ npm install safe-jsonp --save
 
   - `url: String` url to fetch
   - `[options: Object]` [optional]
-  - `sandbox: Boolean|Undefined= undefined` sets sandbox mode for query handling to untrusted origins. 
-  Default `undefined` value means prefer sandboxed mode, but allow non-sandboxed query if environment doesn't support it.
-  In sandboxed mode **all** requests will be done in invisible iframe proxy, created temporally for each origin 
-  - `idleTimeout: Number= 15000` idle timeout for each sandbox in ms
-  - `params: Object` Object with query params to combine with url string
-  - `timeout: Number= 15000` max query pending time in ms. Default: `15000` (15 seconds)
-  - `preventCache: Boolean= true` force disable cache by adding timestamp to a query param `_rnd`
-  - `cbParam: String= 'callback'` name of query param used by backend to get the name of the JSONP callback
-  - `Promise: function` Promise class that be used instead of native (if environment supports it)  
-  - `abortable: Boolean` enables ability to abort for Promise mode. If this option is set to true, 
-  an additional property called abort will be created in options object. 
-  This allows to get the abort function via shared options object.  
+      - `sandbox: Boolean|Undefined= undefined` sets sandbox mode for query handling to untrusted origins. 
+      Default `undefined` value means prefer sandboxed mode, but allow non-sandboxed query if environment doesn't support it.
+      In sandboxed mode **all** requests will be done in invisible iframe proxy, created temporally for each origin 
+      - `idleTimeout: Number= 15000` idle timeout for each sandbox in ms
+      - `params: Object` Object with query params to combine with url string
+      - `timeout: Number= 15000` max query pending time in ms. Default: `15000` (15 seconds)
+      - `preventCache: Boolean= true` force disable cache by adding timestamp to a query param `_rnd`
+      - `cbParam: String= 'callback'` name of query param used by backend to get the name of the JSONP callback
+      - `Promise: function` Promise class that be used instead of native (if environment supports it)  
+      - `abortable: Boolean` enables ability to abort for Promise mode. If this option is set to true, 
+      an additional property called abort will be created in options object. 
+      This allows to get the abort function via shared options object.  
 - `[fn: Function(err: ?Error, [data: Object])= underfined]` callback function, called when jsonp query is complete 
 (with success or error)
 
@@ -44,6 +44,10 @@ Returns a promise or JSON instance depending on the presence of a callback argum
   - `parseURL(url: String): URL|Object` parse URL into components
   - `parseParams(url: String): Object` parse URL params string eg. `a=1&b=2` to params object `{a:1, b:2}`
   - `encodeParams(params: Object): String` encode params object to string
+  
+## Functional diagram
+Sandbox mode: 
+![Image alt](https://github.com/DigitalBrainJS/safe-jsonp/raw/develop/public/safe-jsonp.svg)
 
 ## Usage example
 Promise style:
