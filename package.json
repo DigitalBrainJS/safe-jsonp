@@ -1,6 +1,6 @@
 {
   "name": "safe-jsonp",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "sandboxed jsonp client with Promise support",
   "author": "Dmitriy Mozgovoy",
   "main": "index.js",
@@ -11,7 +11,7 @@
     "build": "gulp build",
     "watch": "gulp watch",
     "dev": "gulp dev",
-    "prepublish": "npm run build"
+    "prepublish": "shx rm -rf dist && npm run build"
   },
   "license": "MIT",
   "homepage": "https://github.com/DigitalBrainJS/safe-jsonp",
@@ -46,7 +46,8 @@
     "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-resolve": "^3.4.0",
     "run-sequence": "^2.2.1",
-    "serve-static": "^1.13.2"
+    "serve-static": "^1.13.2",
+    "shx": "^0.3.2"
   },
   "testling": {
     "harness": "mocha-bdd",

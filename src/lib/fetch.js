@@ -1,6 +1,3 @@
-//https://free.currencyconverterapi.com/api/v6/convert?q=USD_PHP&compact=y&callback=_Ppc.cb0
-
-
 export default function fetch(url, options, callback) {
     let wasCalled, isComplete, script, timer;
     const targetNode = document.head;

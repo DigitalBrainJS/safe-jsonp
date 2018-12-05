@@ -3,7 +3,7 @@
 
 # safe-jsonp
 
-A sandboxed JSONP implementation for browser.
+A sandboxed JSONP implementation for browsers.
 
 ## Installation
 
