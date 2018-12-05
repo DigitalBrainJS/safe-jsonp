@@ -5,7 +5,7 @@ const port = 8000;
 console.log(`Starting JSONP server on ${port}`);
 
 function jsonp_response(callbackName, data) {
-    return `${callbackName}(${JSON.stringify(data)})`;
+    return `${callbackName}(${typeof data == 'object' ? JSON.stringify(data) : data})`;
 }
 
 const server = http.createServer((request, response) => {
@@ -58,7 +58,7 @@ const server = http.createServer((request, response) => {
             break;
         case '/jsonp/valid/sandboxed/hack':
             response.writeHead(200, {'Content-Type': 'text/javascript'});
-            response.end(jsonp_response(callback, {hasAccess: window.parent.document}));
+            response.end(jsonp_response(callback, '{hasAccess: window.parent.document}'));
             break;
         default:
             response.writeHead(404);

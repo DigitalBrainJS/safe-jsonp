@@ -25,8 +25,6 @@ Object.defineProperty(global, registerKey, {
     }
 });
 
-console.log('registerKey',  registerKey);
-
 export default function JSONP(url, options, callback){
     const globalPromise = Promise;
 

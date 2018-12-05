@@ -91,11 +91,7 @@ export default function fetch(url, options, callback) {
         }
     };
 
-    console.log(query);
-
     script.src = url + (query ? '?' + query : '');
-
-    console.log(script.src);
 
     targetNode.appendChild(script);
 

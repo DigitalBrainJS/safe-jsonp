@@ -99,8 +99,6 @@ export default function Sandbox(options) {
                 onready(() => iframe.contentWindow.postMessage(JSON.stringify(Object.assign({key}, data)), "*"));
             };
 
-        console.log(key);
-
         queries[key] = true;
 
         window.addEventListener("message", messageHandler, false);
