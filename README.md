@@ -47,7 +47,7 @@ Returns a promise or JSON instance depending on the presence of a callback argum
   
 ## Functional diagram
 Sandbox mode: 
-![Image alt](https://github.com/DigitalBrainJS/safe-jsonp/raw/develop/public/safe-jsonp.png)
+![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/develop/public/safe-jsonp.png)
 
 ## Usage example
 Promise style:
