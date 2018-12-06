@@ -12,6 +12,12 @@ Install for node.js or browserify using `npm`:
 ``` bash
 $ npm install safe-jsonp --save
 ```
+
+## Direct usage in browser
+Use unpkg.com cdn to get link to script from the package:
+```html
+<script src="https://unpkg.com/safe-jsonp"></script>
+```
 ## API
 
 ### JSONP(url: String, [options: Object]): \<Promise>
