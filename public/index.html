@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sandbox</title>
+    <script src="safe-jsonp.client.umd.js"></script>
+</head>
+<body>
+<h3>Here you can play with safe-jsonp lib</h3>
+<script>
+
+    function successHandler(data) {
+        console.log('%cJSONP Request success: ' + JSON.stringify(data), "color:green");
+    }
+
+    function failedHandler(err) {
+        console.log('%cJSONP Request failed: ' + err, "color:red");
+    }
+</script>
+<br/>
+Not sandboxed:<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/valid', {}).then(successHandler).catch(failedHandler)">Valid
+    request
+</button>
+<br/>
+Sandboxed:<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/valid', {sandbox: true}).then(successHandler).catch(failedHandler)">
+    Valid request
+</button>
+<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/invalid/badargs', {sandbox: true}).then(successHandler).catch(failedHandler)">
+    Got too many arguments given to JSONP cb
+</button>
+<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/valid/long', {sandbox: true}).then(successHandler).catch(failedHandler)">
+    Timeout
+</button>
+<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/invalid/noargs', {sandbox: true}).then(successHandler).catch(failedHandler)">
+    JSONP cb called with no arguments
+</button>
+<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/invalid/nocall', {sandbox: true}).then(successHandler).catch(failedHandler)">
+    JSONP cb was not called
+</button>
+<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/valid/sandboxed/hack', {sandbox: true}).then(successHandler).catch(failedHandler)">
+    Check IFrame access
+</button>
+<br/>
+<button onclick="JSONP('http://localhost:8000/jsonp/404', {sandbox: true}).then(successHandler).catch(failedHandler)">
+    Network error
+</button>
+<br/>
+
+
+</body>
+</html>
