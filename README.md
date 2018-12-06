@@ -52,12 +52,12 @@ Sandbox mode:
 
 ## Usage example
 Promise style:
-```
+```javascript
 JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da')
     .then( data => console.log('JSONP data object:', data), err => console.warn('Oops...we got an error', err.message))
 ```
 Callback style:
-```
+```javascript
 JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
     (err, data) => {
         if(err){
@@ -69,14 +69,14 @@ JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
 ```
 
 Accept sandbox mode only
-```
+```javascript
 JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da', {sandbox: true})
     .then(data=>console.log(data), err=>console.warn(err))
 
 ```
 
 Aborting the request:
-```
+```javascript
 const jsonp= JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
     (err, data) => {
         console.log(err) //Error: aborted  
@@ -85,7 +85,7 @@ const jsonp= JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
     jsonp.abort();
 ```
 Or
-```
+```javascript
 const sharedOptions= {abortable: true};
 
 JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da', sharedOptions)
