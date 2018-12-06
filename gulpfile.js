@@ -10,6 +10,7 @@ const plumber = require('gulp-plumber');
 const connect = require('connect');
 const serveStatic = require('serve-static');
 const child_process= require('child_process');
+const rename = require("gulp-rename");
 
 const PORT= 3000;
 
@@ -17,12 +18,18 @@ let isDevMode= false;
 
 function createBuildTask(entryFile, buildOptions) {
 
-    const {
-        exportName= path.basename(entryFile, '.js'),
-        destPath= DIST_DIR + '/',
-        format= 'umd',
-        taskTargetName = exportName
-    } = buildOptions || {};
+    const {name, base, ext} = path.parse(entryFile),
+        {
+            exportName = name,
+            destPath = DIST_DIR,
+            format = 'umd',
+            outFile = `${name}.${format}${ext}`,
+            taskTargetName = outFile,
+
+            include = 'node_modules/**',
+            exclude,
+
+        } = buildOptions || {};
 
 
     const taskName = `build:${taskTargetName}`;
@@ -34,7 +41,8 @@ function createBuildTask(entryFile, buildOptions) {
                 plugins: [
                     resolve({jsnext: true}),
                     commonjs({
-                        include: 'node_modules/**'
+                        include: include === false ? undefined : include,
+                        exclude
                     })
                 ],
 
@@ -43,7 +51,7 @@ function createBuildTask(entryFile, buildOptions) {
                 name: exportName,
                 format
             }))
-
+            .pipe(outFile !== base ? rename(outFile) : noop())
             .pipe(gulp.dest(destPath))
     });
 
@@ -62,14 +70,14 @@ gulp.task('webserver', function() {
     console.log(`Server listening on http://localhost:${PORT}`);
 });
 
-const clientBuildTask= createBuildTask('src/safe-jsonp.client.js', {exportName: 'JSONP', minify: false});
-const serverBuildTask= createBuildTask('src/safe-jsonp.node.js', {format: 'cjs'});
-const testBuildTask = createBuildTask('test/safe-jsonp.spec.js', {
-    format: 'cjs',
-    destPath: path.resolve(DIST_DIR, '/test')
-});
+const clientBuildTask = createBuildTask('src/safe-jsonp.client.js', {exportName: 'JSONP'});
+const clientBuildTaskES = createBuildTask('src/safe-jsonp.client.js', {format: 'esm'});
 
-gulp.task('build', [clientBuildTask, serverBuildTask]);
+
+gulp.task('build', [clientBuildTask, clientBuildTaskES]);
+gulp.task('build:dev', [clientBuildTask]);
+
+
 
 let spawned_process= null;
 
@@ -81,12 +89,10 @@ gulp.task('kill-server', function(){
 });
 
 gulp.task('run-server-sandbox',function(){
-    spawned_process = child_process.fork('./test/jsonp-server.js', {
-        //'execArgv': ['inspect']
-    });
+    spawned_process = child_process.fork('./test/jsonp-server.js');
 
     spawned_process.on('exit', (code)=>{
-        console.log(`Child exited with code ${code}`);
+        console.log(`JSONP server exited with code ${code}`);
     });
 
 });
@@ -104,15 +110,15 @@ const shellTask = (name, command) => {
     return name;
 };
 
-const npmBuildTest = shellTask('npm:test:build', 'npm run test:build');
+const npmBuildTest = shellTask('test:build', 'npm run test:build');
 
 
 gulp.task('dev', function (done) {
     isDevMode= true;
 
-    runSequence(['build', 'webserver'], npmBuildTest, 'run-server-sandbox', function () {
+    runSequence(['build:dev', 'webserver'], npmBuildTest, 'run-server-sandbox', function () {
         console.log('File watcher started');
-        gulp.watch('./src/**/*.js', ['kill-server', 'build', npmBuildTest, 'run-server-sandbox'], function (file) {
+        gulp.watch('./src/**/*.js', ['kill-server', 'build:dev', npmBuildTest, 'run-server-sandbox'], function (file) {
             console.log(`File [${file.path}] has been changed`);
         });
 
