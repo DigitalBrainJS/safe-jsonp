@@ -59,34 +59,32 @@ Sandbox mode:
 ## Usage example
 Promise style:
 ```javascript
-JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da')
+JSONP('http://api.github.com/users/DigitalBrainJS')
     .then( data => console.log('JSONP data object:', data), err => console.warn('Oops...we got an error', err.message))
 ```
 Callback style:
 ```javascript
-JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
-    (err, data) => {
+JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
         if(err){
             console.warn('Oops...we got an error', err.message)
         }else{
-            data => console.log('JSON data:', data)
+            console.log('JSON data:', data)
         }    
     })
 ```
 
 Accept sandbox mode only
 ```javascript
-JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da', {sandbox: true})
+JSONP('http://api.github.com/users/DigitalBrainJS', {sandbox: true})
     .then(data=>console.log(data), err=>console.warn(err))
 
 ```
 
 Aborting the request:
 ```javascript
-const jsonp= JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da',
-    (err, data) => {
+const jsonp= JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
         console.log(err) //Error: aborted  
-    })
+    });
     
     jsonp.abort();
 ```
@@ -94,8 +92,8 @@ Or
 ```javascript
 const sharedOptions= {abortable: true};
 
-JSONP('http://www.mocky.io/v2/5c06d5893000007300d258da', sharedOptions)
-    .then(data=>console.log(data), err=>console.warn(err))
+JSONP('http://api.github.com/users/DigitalBrainJS', sharedOptions)
+    .then(data=>console.log(data), err=>console.warn(err));
     
     sharedOptions.abort();
 ```
