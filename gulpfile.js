@@ -95,8 +95,22 @@ gulp.task('webserver', function() {
 const clientBuildTask = createBuildTask(clientEntryFile, {exportName: 'JSONP', toES5: true, minify: true});
 const clientBuildTaskES = createBuildTask(clientEntryFile, {format: 'esm', minify: true});
 
+const shellTask = (name, command) => {
+    gulp.task(name, function (done) {
+        spawned_process = child_process.exec(command);
 
-gulp.task('build', [clientBuildTask, clientBuildTaskES]);
+        spawned_process.on('exit', (code) => {
+            console.log(`Child process for ${name} exited with code ${code}`);
+            code ? done(new Error(`Process for task ${name} exited with code ${code}`)) : done();
+        });
+    });
+
+    return name;
+};
+
+const npmBuildTest = shellTask('test:build', 'npm run test:build');
+
+gulp.task('build', [clientBuildTask, clientBuildTaskES, npmBuildTest]);
 gulp.task('build:dev', [clientBuildTask]);
 
 
@@ -119,20 +133,7 @@ gulp.task('jsonp-server', function () {
 
 });
 
-const shellTask = (name, command) => {
-    gulp.task(name, function (done) {
-        spawned_process = child_process.exec(command);
 
-        spawned_process.on('exit', (code) => {
-            console.log(`Child process for ${name} exited with code ${code}`);
-            code ? done(new Error(`Process for task ${name} exited with code ${code}`)) : done();
-        });
-    });
-
-    return name;
-};
-
-const npmBuildTest = shellTask('test:build', 'npm run test:build');
 
 
 gulp.task('dev', function (done) {
