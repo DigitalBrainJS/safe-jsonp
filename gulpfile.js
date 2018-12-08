@@ -110,7 +110,9 @@ const shellTask = (name, command) => {
 
 const npmBuildTest = shellTask('test:build', 'npm run test:build');
 
-gulp.task('build', [clientBuildTask, clientBuildTaskES, npmBuildTest]);
+gulp.task('build', function (done) {
+    runSequence([clientBuildTask, clientBuildTaskES], npmBuildTest, done);
+});
 gulp.task('build:dev', [clientBuildTask]);
 
 

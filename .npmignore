@@ -4,4 +4,5 @@
 /public/
 /test/
 /src/
+/dist/safe-jsonp.spec.js
 gulpfile.js
