@@ -1,17 +1,18 @@
 {
   "name": "safe-jsonp",
   "version": "0.1.1",
-  "description": "sandboxed jsonp client with Promise support",
+  "description": "safer jsonp client with sandbox and Promise support",
   "author": "Dmitriy Mozgovoy",
   "main": "index.js",
-  "browser": "./dist/safe-jsonp.client.umd.js",
-  "module": "./dist/safe-jsonp.client.esm.js",
+  "browser": "./dist/safe-jsonp.umd.js",
+  "module": "./dist/safe-jsonp.esm.js",
   "scripts": {
     "test": "mocha test/safe-jsonp.spec.js --ui bdd --reporter spec",
     "test:build": "browserify test/safe-jsonp.spec.js>dist/safe-jsonp.spec.js",
     "build": "gulp build",
     "watch": "gulp watch",
     "dev": "gulp dev",
+    "jsonp-server": "gulp jsonp-server",
     "prepublish": "shx rm -rf dist && npm run build"
   },
   "license": "MIT",
@@ -30,21 +31,33 @@
     "load",
     "ajax",
     "http",
-    "sandbox"
+    "sandbox",
+    "promise",
+    "browser",
+    "script",
+    "cors"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-transform-arrow-functions": "^7.2.0",
+    "@babel/plugin-transform-block-scoping": "^7.2.0",
+    "@babel/plugin-transform-destructuring": "^7.2.0",
+    "@babel/plugin-transform-shorthand-properties": "^7.2.0",
+    "@babel/plugin-transform-template-literals": "^7.2.0",
     "chai": "^4.2.0",
     "connect": "^3.6.6",
     "expect": "^23.6.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
     "gulp-better-rollup": "^3.3.0",
+    "gulp-minify": "^3.1.0",
     "gulp-plumber": "^1.2.0",
     "gulp-rename": "^1.4.0",
     "mocha": "^5.2.0",
+    "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-resolve": "^3.4.0",
     "run-sequence": "^2.2.1",
@@ -59,5 +72,6 @@
       "chrome/latest",
       "firefox/latest"
     ]
-  }
+  },
+  "dependencies": {}
 }

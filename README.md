@@ -14,10 +14,24 @@ $ npm install safe-jsonp --save
 ```
 
 ## Direct usage in the browser
-Use unpkg.com cdn to get link to script from the package:
+Use unpkg.com cdn to get link to script/module from the package:
+- unminified UMD ES5 version (~15kB)
 ```html
 <script src="https://unpkg.com/safe-jsonp"></script>
 ```
+- minified UMD ES5 version (~7kB)
+```html
+<script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.min.js"></script>
+```
+- unminified ESM ES2015 module (~14kB)
+```html
+<script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.js"></script>
+```
+- minified ESM ES2015 module (~14kB)
+```html
+<script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.min.js"></script>
+```
+
 ## API
 
 ### JSONP(url: String, [options: Object]): \<Promise>

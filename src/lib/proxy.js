@@ -7,7 +7,7 @@ export default function proxy(){
     }
 
     window.addEventListener("message", (e)=>{
-        let key, data;
+        let key, data, abort;
 
         try {
             try {

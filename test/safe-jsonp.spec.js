@@ -1,6 +1,6 @@
 const chai = require('chai');
 const {expect}= chai;
-const JSONP = require('../dist/safe-jsonp.client.umd');
+const JSONP = require('../dist/safe-jsonp.umd');
 
 const JSONP_URL_VALID = 'http://www.mocky.io/v2/5c069fbf3300006c00ef2b3e';
 const JSONP_URL_VALID2 = 'http://www.mocky.io/v2/5c06a4bb3300006300ef2b61';
