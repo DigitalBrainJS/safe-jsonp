@@ -27,10 +27,13 @@ Use unpkg.com cdn to get link to script/module from the package:
 ```html
 <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.js"></script>
 ```
-- minified ESM ES2015 module (~14kB)
+- minified ESM ES2015 module (~7kB)
 ```html
 <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.min.js"></script>
 ```
+
+## Try It!
+[Demo page for test](http://htmlpreview.github.io/?https://github.com/DigitalBrainJS/safe-jsonp/blob/master/public/index.html)
 
 ## API
 
