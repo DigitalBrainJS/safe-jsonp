@@ -1,6 +1,5 @@
 [![browser support](https://ci.testling.com/DigitalBrainJS/safe-jsonp.png)
 ](https://ci.testling.com/DigitalBrainJS/safe-jsonp)
-[![Package Quality](http://npm.packagequality.com/badge/safe-jsonp.png)](http://packagequality.com/#?package=safe-jsonp)
 # safe-jsonp 
 
 
