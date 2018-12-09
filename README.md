@@ -59,14 +59,14 @@ Use unpkg.com cdn to get link to script/module from the package:
   - `url: String` url to fetch
   - `[options: Object]` [optional]
       - `sandbox: Boolean|Undefined= undefined` sets sandbox mode for query handling to untrusted origins. 
-      Default `undefined` value means prefer sandboxed mode, but allow non-sandboxed query if environment doesn't support it.
+      Default `undefined` value means prefer sandboxed mode, but allow non-sandboxed query if the environment doesn't support it.
       In sandboxed mode **all** requests will be done in invisible iframe proxy, created temporally for each origin 
       - `idleTimeout: Number= 15000` idle timeout for each sandbox in ms
-      - `params: Object` Object with query params to combine with url string
+      - `params: Object` Object with query params to combine with a URL
       - `timeout: Number= 15000` max query pending time in ms. Default: `15000` (15 seconds)
       - `preventCache: Boolean= true` force disable cache by adding timestamp to a query param `_rnd`
-      - `cbParam: String= 'callback'` name of query param used by backend to get the name of the JSONP callback
-      - `Promise: function` Promise class that be used instead of native (if environment supports it)  
+      - `cbParam: String= 'callback'` name of the query param used by backend to get the name of the JSONP callback
+      - `Promise: Function` Promise class that be used instead of native (if environment supports it)  
       - `abortable: Boolean` enables ability to abort for Promise mode. If this option is set to true, 
       an additional property called abort will be created in options object. 
       This allows to get the abort function via shared options object.  
@@ -96,7 +96,7 @@ JSONP('http://api.github.com/users/DigitalBrainJS')
 const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age=23', {
     params: {
         foo: 1,
-        bar: [1,2,3]// We can pass objects and arrays as param value
+        bar: [1,2,3]// We can pass objects and arrays as a param value
     },
     
     timeout: 60000 //60 seconds
