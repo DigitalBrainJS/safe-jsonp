@@ -1,8 +1,8 @@
 [![browser support](https://ci.testling.com/DigitalBrainJS/safe-jsonp.png)
 ](https://ci.testling.com/DigitalBrainJS/safe-jsonp)
-
-# safe-jsonp 
 [![Package Quality](http://npm.packagequality.com/badge/safe-jsonp.png)](http://packagequality.com/#?package=safe-jsonp)
+# safe-jsonp 
+
 
 A sandboxed JSONP implementation for the browser.
 
