@@ -5,6 +5,20 @@
 
 A sandboxed JSONP implementation for the browser.
 
+# Features
+- optional sandbox mechanism for safer requests to untrusted origins (internally used iframes)
+- support Promise and callback style
+- support custom Promise class
+- anti-caching `_rnd` query param
+
+## Functional diagram
+Sandbox mode: 
+
+![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/master/public/safe-jsonp.png)
+
+## Try It!
+[Demo page for test](http://htmlpreview.github.io/?https://github.com/DigitalBrainJS/safe-jsonp/blob/master/public/index.html)
+
 ## Installation
 
 Install for node.js or browserify using `npm`:
@@ -32,8 +46,6 @@ Use unpkg.com cdn to get link to script/module from the package:
 <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.min.js"></script>
 ```
 
-## Try It!
-[Demo page for test](http://htmlpreview.github.io/?https://github.com/DigitalBrainJS/safe-jsonp/blob/master/public/index.html)
 
 ## API
 
@@ -68,17 +80,18 @@ Returns a promise or JSON instance depending on the presence of a callback argum
   - `parseParams(url: String): Object` parse URL params string eg. `a=1&b=2` to params object `{a:1, b:2}`
   - `encodeParams(params: Object): String` encode params object to string
   
-## Functional diagram
-Sandbox mode: 
-
-![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/master/public/safe-jsonp.png)
-
 ## Usage example
 Promise style:
 ```javascript
 JSONP('http://api.github.com/users/DigitalBrainJS')
     .then( data => console.log('JSONP data object:', data), err => console.warn('Oops...we got an error', err.message))
 ```
+
+```javascript
+//in async function
+const data= await JSONP('http://api.github.com/users/DigitalBrainJS')
+```   
+
 Callback style:
 ```javascript
 JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
@@ -103,7 +116,7 @@ const jsonp= JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => 
         console.log(err) //Error: aborted  
     });
     
-    jsonp.abort();
+jsonp.abort();
 ```
 Or
 ```javascript
@@ -112,7 +125,7 @@ const sharedOptions= {abortable: true};
 JSONP('http://api.github.com/users/DigitalBrainJS', sharedOptions)
     .then(data=>console.log(data), err=>console.warn(err));
     
-    sharedOptions.abort();
+sharedOptions.abort();
 ```
 
 ## License
