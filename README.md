@@ -1,7 +1,8 @@
 [![browser support](https://ci.testling.com/DigitalBrainJS/safe-jsonp.png)
 ](https://ci.testling.com/DigitalBrainJS/safe-jsonp)
 
-# safe-jsonp
+# safe-jsonp 
+[![Package Quality](http://npm.packagequality.com/badge/safe-jsonp.png)](http://packagequality.com/#?package=safe-jsonp)
 
 A sandboxed JSONP implementation for the browser.
 
@@ -10,6 +11,8 @@ A sandboxed JSONP implementation for the browser.
 - support Promise and callback style
 - support custom Promise class
 - anti-caching `_rnd` query param
+- support query params in url string and/or options.params property
+- automatically encoding params, converting objects and arrays params to JSON strings  
 
 ## Functional diagram
 Sandbox mode: 
@@ -17,7 +20,9 @@ Sandbox mode:
 ![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/master/public/safe-jsonp.png)
 
 ## Try It!
-[Demo page for test](http://htmlpreview.github.io/?https://github.com/DigitalBrainJS/safe-jsonp/blob/master/public/index.html)
+[Github demo](http://htmlpreview.github.io/?https://github.com/DigitalBrainJS/safe-jsonp/blob/master/public/index.html)
+
+[JSFiddle.net demo](https://jsfiddle.net/DigitalBrain/ugz5qn0r/10/)
 
 ## Installation
 
@@ -88,8 +93,18 @@ JSONP('http://api.github.com/users/DigitalBrainJS')
 ```
 
 ```javascript
-//in async function
-const data= await JSONP('http://api.github.com/users/DigitalBrainJS')
+//in the context of the ES2015 async function
+const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age=23', {
+    params: {
+        foo: 1,
+        bar: [1,2,3]// We can pass objects and arrays as param value
+    },
+    
+    timeout: 60000 //60 seconds
+})
+
+//will make request like https://api.github.com/users/DigitalBrainJS?name=bla&age=23&foo=1&bar=%5B1%2C2%2C3%5D&callback=_jsonpvqz.cb0
+//callback param is randomly generated to avoid collisions
 ```   
 
 Callback style:

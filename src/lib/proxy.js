@@ -1,37 +1,39 @@
-export default function proxy(){
+export default function proxy() {
 
-    const queries= {};
+    const queries = {};
 
-    function response(data){
+    function response(data) {
         window.parent.postMessage(JSON.stringify(data), "*");
     }
 
-    window.addEventListener("message", (e)=>{
+    window.addEventListener("message", (e) => {
         let key, data, abort;
 
         try {
             try {
                 ({key, data, abort} = JSON.parse(e.data));
             } catch (e) {
-                throw Error("invalid JSON request")
+                throw Error("invalid JSON request");
             }
 
-            if(abort){
-                const query= queries[key];
+            if (abort) {
+                const query = queries[key];
                 query && query();
-            }else{
-                if(!data.url) throw Error('url required');
+            } else {
+                if (!data.url) {
+                    throw Error("url required");
+                }
 
-                queries[key]= fetch(data.url, data.options, (err, data)=>{
+                queries[key] = fetch(data.url, data.options, (err, data) => {
                     delete queries[key];
                     response({
                         key,
                         data: {err, data}
-                    })
+                    });
                 });
             }
-        }catch(e){
-            response(e.message);
+        } catch (err) {
+            response(err.message);
         }
 
 
