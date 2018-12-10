@@ -1,4 +1,4 @@
-export let global = new Function('return this')();
+export let global = new Function("return this")();
 
 const {toString}= Object.prototype;
 
@@ -34,8 +34,8 @@ export const testValueType = (name, value, types, fn) => {
 
     if (!~types.indexOf(realType)) {
         const error= TypeError(
-            `${name} should be ${r.test(types[0])? 'an' : 'a'} ${types.join('|')},` +
-            ` not ${r.test(realType)? 'an' : 'a'} ${realType}`
+            `${name} should be ${r.test(types[0]) ? "an" : "a"} ${types.join("|")},` +
+            ` not ${r.test(realType) ? "an" : "a"} ${realType}`
         );
 
         if(fn){
@@ -54,8 +54,8 @@ export const testValueType = (name, value, types, fn) => {
 
 export function parseParams(rawParams, params = {}){
     if(rawParams) {
-        ('' + rawParams).split('&').forEach(pair => {
-            const [key, value] = pair.split('='),
+        ("" + rawParams).split("&").forEach(pair => {
+            const [key, value] = pair.split("="),
                 decodedKey = decodeURIComponent(key),
                 decodedValue = value!==undefined? decodeURIComponent(value) : undefined,
                 currentEntry = params[decodedKey];
@@ -67,5 +67,5 @@ export function parseParams(rawParams, params = {}){
 
 export const encodeParams= (params) =>params ? Object.keys(params).map(param => {
     let rawValue = params[param];
-    return `${param}=${encodeURIComponent(rawValue && typeof rawValue == 'object'? JSON.stringify(rawValue) : ('' + rawValue))}`;
-}).join('&') : '';
+    return `${param}=${encodeURIComponent(rawValue && typeof rawValue == "object" ? JSON.stringify(rawValue) : ("" + rawValue))}`;
+}).join("&") : "";

@@ -1,4 +1,4 @@
-export const parseURL = typeof URL != 'undefined' ? (url) => new URL(url, window.location.href) : (url) => {
+export const parseURL = typeof URL != "undefined" ? (url) => new URL(url, window.location.href) : (url) => {
     let a = document.createElement("a");
 
     return {
@@ -17,7 +17,7 @@ export const parseURL = typeof URL != 'undefined' ? (url) => new URL(url, window
 export function onDOMReady(callback) {
     let s = document.readyState;
 
-    if (s == 'interactive' || s == 'complete') {
+    if (s == "interactive" || s == "complete") {
         callback();
     } else {
         document.addEventListener("DOMContentLoaded", function handler() {

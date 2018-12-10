@@ -27,6 +27,7 @@
     "json",
     "safe",
     "fetch",
+    "secure",
     "get",
     "load",
     "ajax",

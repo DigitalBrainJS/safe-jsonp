@@ -1,21 +1,21 @@
-import {getType, randomStr, generateUniquePropName} from './utils';
-import {parseURL, onDOMReady} from './browser';
-import fetch from './fetch';
-import proxy from './proxy';
+import {getType, randomStr, generateUniquePropName} from "./utils";
+import {parseURL, onDOMReady} from "./browser";
+import fetch from "./fetch";
+import proxy from "./proxy";
 
 const injectResource = (imports) => Object.keys(imports).map(name => {
     const resource = imports[name];
 
     switch (getType(resource)) {
-        case 'string':
+        case "string":
             return resource;
-        case 'function':
+        case "function":
             return `const ${name}= ${resource.toString()}`;
         default:
             return resource.toString()
     }
 
-}).join(';\n');
+}).join(";\n");
 
 
 const sandboxes= {};
@@ -24,11 +24,10 @@ export default function Sandbox(options) {
     const sandbox = this,
         imports = {
             fetch,
-            proxy,
-            init: 'proxy()'
+            proxy
         };
 
-    let iframe = document.createElement('iframe'),
+    let iframe = document.createElement("iframe"),
         queries = {};
 
 
@@ -39,13 +38,13 @@ export default function Sandbox(options) {
 
     origin && (sandboxes[origin]= sandbox);
 
-    iframe.setAttribute('sandbox', 'allow-scripts');
-    iframe.style.display = 'none';
+    iframe.setAttribute("sandbox", "allow-scripts");
+    iframe.style.display = "none";
 
     let isReady = false, readyHandlers = [], idleTimer;
 
-    iframe.addEventListener('load', function onReady() {
-        iframe.removeEventListener('load', onReady);
+    iframe.addEventListener("load", function onReady() {
+        iframe.removeEventListener("load", onReady);
         isReady= true;
         readyHandlers.map(handler=> handler.call(sandbox));
         readyHandlers= [];
@@ -116,7 +115,7 @@ export default function Sandbox(options) {
     };
 
     iframe.src = "data:text/html;charset=utf-8," +
-        encodeURI(`<body><script>${injectResource(imports)}</script></body>`);
+        encodeURI(`<body><script>${injectResource(imports)};proxy()</script></body>`);
 
     onDOMReady(()=>{
         document.body.appendChild(iframe)
@@ -130,5 +129,5 @@ Object.assign(Sandbox, {
         return (origin && sandboxes[origin] || new Sandbox({origin})).query(data, callback);
     },
 
-    isSupported: typeof window.postMessage=='function'
+    isSupported: typeof window.postMessage == "function"
 });

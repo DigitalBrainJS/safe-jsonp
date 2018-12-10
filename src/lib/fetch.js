@@ -9,7 +9,7 @@ export default function fetch(url, options, callback) {
                 timer && clearInterval(timer);
                 if (script) {
                     targetNode.removeChild(script);
-                    script.type = '';
+                    script.type = "";
                 }
 
                 callback(err, data);
@@ -26,21 +26,21 @@ export default function fetch(url, options, callback) {
             } else if (length > 1) {
                 done("too many arguments were passed to the JSONP callback");
             } else {
-                typeof data == 'object' ? done(null, data) : done('invalid data argument type');
+                typeof data == "object" ? done(null, data) : done("invalid data argument type");
             }
         };
 
     let {
         timeout = 15000,
-        registerKey = '__jp',
+        registerKey = "__jp",
         register = window[registerKey] || (window[registerKey] = {}),
         params = {},
         cbParam,
         preventCache
     } = options || {};
 
-    if (!cbParam || !(cbParam = (cbParam + '').trim())) {
-        cbParam = 'callback';
+    if (!cbParam || !(cbParam = (cbParam + "").trim())) {
+        cbParam = "callback";
     }
 
     let cbName, i = 0;
@@ -68,31 +68,31 @@ export default function fetch(url, options, callback) {
     });
 
 
-    params[cbParam] = registerKey + '.' + cbName;
+    params[cbParam] = registerKey + "." + cbName;
 
     const query = params ? Object.keys(params).map(param => {
         let rawValue = params[param];
-        return `${param}=${encodeURIComponent(rawValue && typeof rawValue == 'object' ?
-            JSON.stringify(rawValue) : ('' + rawValue))}`;
-    }).join('&') : '';
+        return `${param}=${encodeURIComponent(rawValue && typeof rawValue == "object" ?
+            JSON.stringify(rawValue) : ("" + rawValue))}`;
+    }).join("&") : "";
 
-    script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.onerror = () => done('network');
+    script = document.createElement("script");
+    script.type = "text/javascript";
+    script.onerror = () => done("network");
     script.onload = completeHandler;
 
     script.onreadystatechange = function () {
-        if (script.readyState == 'complete' || script.readyState == 'loaded') {
+        if (script.readyState == "complete" || script.readyState == "loaded") {
             script.onreadystatechange = null;
             completeHandler();
         }
     };
 
-    script.src = url + (query ? '?' + query : '');
+    script.src = url + (query ? "?" + query : "");
 
     targetNode.appendChild(script);
 
-    return () => done('aborted');
+    return () => done("aborted");
 };
 
 

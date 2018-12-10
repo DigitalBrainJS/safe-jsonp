@@ -8,13 +8,13 @@ import {
     randomStr
 } from "./lib/utils";
 
-import {parseURL} from './lib/browser';
+import {parseURL} from "./lib/browser";
 
-import _fetch from './lib/fetch';
+import _fetch from "./lib/fetch";
 
-import Sandbox from './lib/sandbox';
+import Sandbox from "./lib/sandbox";
 
-const registerKey= generateUniquePropName(global, (i)=>'_jsonp' +randomStr(3 + i/10)),
+const registerKey = generateUniquePropName(global, (i) => "_jsonp" + randomStr(3 + i / 10)),
     internalRegister= {},
     register= Object.create(internalRegister);
 
@@ -29,14 +29,14 @@ export default function JSONP(url, options, callback){
     const globalPromise = Promise;
 
     return (function (url, options = {}, callback) {
-        testValueType('url', url, ['string']);
-        testValueType('options', options, ['object']);
-        testValueType('callback', callback, ['function', 'undefined']);
+        testValueType("url", url, ["string"]);
+        testValueType("options", options, ["object"]);
+        testValueType("callback", callback, ["function", "undefined"]);
 
-        testValueType('options.sandbox', options.sandbox, ['boolean', 'undefined']);
-        testValueType('options.params', options.params, ['object', 'undefined']);
-        testValueType('options.timeout', options.timeout, ['number', 'undefined']);
-        testValueType('options.cbParam', options.cbParam, ['string', 'undefined']);
+        testValueType("options.sandbox", options.sandbox, ["boolean", "undefined"]);
+        testValueType("options.params", options.params, ["object", "undefined"]);
+        testValueType("options.timeout", options.timeout, ["number", "undefined"]);
+        testValueType("options.cbParam", options.cbParam, ["string", "undefined"]);
 
         let {
             sandbox,
@@ -56,7 +56,7 @@ export default function JSONP(url, options, callback){
 
                 const computedParams = Object.assign(urlParams, params || null),
                     _url = origin + pathname,
-                    wrappedCallback = (err, data) => callback(err && typeof err !== 'object' ? Error(err) : err, data);
+                    wrappedCallback = (err, data) => callback(err && typeof err !== "object" ? Error(err) : err, data);
 
                 if (sandbox && !Sandbox.isSupported) {
                     if (sandbox === true) return wrappedCallback("sandbox is not supported");
@@ -95,7 +95,7 @@ export default function JSONP(url, options, callback){
             request((err, data) => err ? reject(err) : resolve(data))
         })
 
-    }).apply(this instanceof JSONP ? this : Object.create(JSONP.prototype), typeof options === 'function' ?
+    }).apply(this instanceof JSONP ? this : Object.create(JSONP.prototype), typeof options === "function" ?
         [url, undefined, options] : [url, options, callback]);
 }
 
