@@ -26,7 +26,7 @@ Object.defineProperty(global, registerKey, {
 });
 
 export default function JSONP(url, options, callback){
-    const globalPromise = Promise;
+    const globalPromise = typeof Promise !== "undefined" ? Promise : null;
 
     return (function (url, options = {}, callback) {
         testValueType("url", url, ["string"]);
@@ -45,7 +45,7 @@ export default function JSONP(url, options, callback){
             preventCache,
             cbParam,
             abortable,
-            Promise = globalPromise,
+            Promise: _Promise = globalPromise,
             params
         } = options;
 
@@ -91,7 +91,7 @@ export default function JSONP(url, options, callback){
                 return instance;
             };
 
-        return callback ? request(callback) : new Promise((resolve, reject) => {
+        return callback ? request(callback) : new _Promise((resolve, reject) => {
             request((err, data) => err ? reject(err) : resolve(data))
         })
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Sandbox</title>
-    <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.min.js"></script>
+    <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.js"></script>
     <style>
         body {
             padding: 25px;
@@ -78,14 +78,15 @@
     }
 
     function successHandler(data) {
-        var text = '<div class="success">JSONP Request success</div><div class="body">' + JSON.stringify(data) + '</div>';
-        console.log('%c' + text, "color:green");
-        logElement.innerHTML = text;
+        var dataString = JSON.stringify(data),
+            text = '<div class="success">JSONP Request success</div><div class="body">' + dataString + '</div>';
+        console.log('%cJSONP Request success:' + dataString, "color:green");
+        logElement.innerHTML = 'JSONP Request success: ' + dataString;
     }
 
     function failedHandler(err) {
         var text = '<div class="failed">JSONP Request failed</div><div class="body">' + err + '</div>';
-        console.log('%c' + text, "color:red");
+        console.log('%cJSONP Request failed: ' + err, "color:red");
         logElement.innerHTML = text;
     }
 
@@ -93,5 +94,7 @@
         fetch(undefined, {sandbox: sandboxControl.checked})
     }
 </script>
+
+<script src="http://localhost:8000/jsonp/invalid/syntax"></script>
 </body>
 </html>
