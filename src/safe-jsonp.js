@@ -1,4 +1,3 @@
-
 import {
     global,
     generateUniquePropName,
@@ -15,17 +14,17 @@ import _fetch from "./lib/fetch";
 import Sandbox from "./lib/sandbox";
 
 const registerKey = generateUniquePropName(global, (i) => "_jsonp" + randomStr(3 + i / 10)),
-    internalRegister= {},
-    register= Object.create(internalRegister);
+    internalRegister = {},
+    register = Object.create(internalRegister);
 
 Object.defineProperty(global, registerKey, {
-    get: ()=> register,
-    set: ()=>{
+    get: () => register,
+    set: () => {
         throw Error(`cannot rewrite JSONP callback register in window.${registerKey}`);
     }
 });
 
-export default function JSONP(url, options, callback){
+export default function JSONP(url, options, callback) {
     const globalPromise = typeof Promise !== "undefined" ? Promise : null;
 
     return (function (url, options = {}, callback) {
