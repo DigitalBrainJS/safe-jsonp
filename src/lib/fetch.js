@@ -1,4 +1,4 @@
-import {encodeParams, randomStr} from "./utils";
+import {encodeParams, randomStr, mixin} from "./utils";
 
 export default function fetch(url, options, callback) {
     let wasCalled, isComplete, script, timer;
@@ -79,7 +79,10 @@ export default function fetch(url, options, callback) {
         }
     };
 
-    script.src = url + "?" + encodeParams(Object.assign(params, internalParams));
+    const computedParams = {};
+
+
+    script.src = url + "?" + encodeParams(mixin(params, internalParams));
 
     targetNode.appendChild(script);
 

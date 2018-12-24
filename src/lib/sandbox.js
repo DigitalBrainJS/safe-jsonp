@@ -1,4 +1,4 @@
-import {getType, randomStr, generateUniquePropName, once, encodeParams} from "./utils";
+import {getType, randomStr, generateUniquePropName, once, encodeParams, mixin} from "./utils";
 import {parseURL, whenDOMReady, addEvent} from "./browser";
 import fetch from "./fetch";
 import proxy from "./proxy";
@@ -25,6 +25,7 @@ export default function Sandbox(options) {
         imports = {
             fetch,
             proxy,
+            mixin,
             encodeParams,
             randomStr
         };

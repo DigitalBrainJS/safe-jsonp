@@ -2,14 +2,9 @@ sudo: false
 language: node_js
 node_js:
   - "6"
-  - "7"
-  - "8"
-  - "9"
 env:
   - NODE_ENV=TEST
 before_script:
   - npm run build
-  - npm i testem -g
-  - npm i mocha-phantomjs -g
 script:
   - npm run test

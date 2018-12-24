@@ -74,7 +74,18 @@ export function parseParams(rawParams, params = {}){
     return params;
 };
 
-export const encodeParams= (params) =>params ? Object.keys(params).map(param => {
+export function mixin(obj) {
+    let i = arguments.length, props = {};
+
+    while (i-- > 0) {
+        const dest = arguments[i];
+        Object.keys(dest).map(key => props[key] || (props[key] = true) && (obj[key] = dest[key]))
+    }
+
+    return obj;
+}
+
+export const encodeParams = (params) => Object.keys(params).map(param => {
     let rawValue = params[param];
     return `${param}=${encodeURIComponent(rawValue && typeof rawValue == "object" ? JSON.stringify(rawValue) : ("" + rawValue))}`;
-}).join("&") : "";
+}).join("&");

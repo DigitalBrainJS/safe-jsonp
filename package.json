@@ -7,13 +7,13 @@
   "browser": "./dist/safe-jsonp.umd.js",
   "module": "./dist/safe-jsonp.esm.js",
   "scripts": {
-    "test": "mocha test/safe-jsonp.spec.js --ui bdd --reporter spec",
-    "test:build": "browserify test/safe-jsonp.spec.js>dist/safe-jsonp.spec.js",
-    "build": "gulp build",
+    "test": "npm run build && mocha-phantomjs test/test.html",
+    "build": "shx rm -rf dist && gulp build",
     "watch": "gulp watch",
     "dev": "gulp dev",
     "jsonp-server": "gulp jsonp-server",
-    "prepublish": "shx rm -rf dist && npm run build"
+    "prepublish": "npm test",
+    "postversion": "git push && git push --tags"
   },
   "license": "MIT",
   "homepage": "https://github.com/DigitalBrainJS/safe-jsonp",
@@ -59,21 +59,13 @@
     "gulp-plumber": "^1.2.0",
     "gulp-rename": "^1.4.0",
     "mocha": "^5.2.0",
+    "mocha-phantomjs": "^4.1.0",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-resolve": "^3.4.0",
     "run-sequence": "^2.2.1",
     "serve-static": "^1.13.2",
     "shx": "^0.3.2"
-  },
-  "testling": {
-    "harness": "mocha-bdd",
-    "files": "test/safe-jsonp.spec.js",
-    "browsers": [
-      "ie/8..latest",
-      "chrome/latest",
-      "firefox/latest"
-    ]
   },
   "dependencies": {}
 }
