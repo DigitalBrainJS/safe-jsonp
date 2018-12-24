@@ -1,12 +1,12 @@
+import {encodeParams, randomStr} from "./utils";
+
 export default function fetch(url, options, callback) {
     let wasCalled, isComplete, script, timer;
-    const targetNode = document.head;
-
-
-    const done = (err, data) => {
+    const targetNode = document.head,
+        done = (err, data) => {
             if (!isComplete) {
                 isComplete = true;
-                timer && clearInterval(timer);
+                timer && clearTimeout(timer);
                 if (script) {
                     targetNode.removeChild(script);
                     script.type = "";
@@ -36,7 +36,7 @@ export default function fetch(url, options, callback) {
         register = window[registerKey] || (window[registerKey] = {}),
         params = {},
         cbParam,
-        preventCache
+        preventCache = true
     } = options || {};
 
     if (!cbParam || !(cbParam = (cbParam + "").trim())) {
@@ -58,23 +58,14 @@ export default function fetch(url, options, callback) {
 
     const internalParams = {};
 
-    internalParams[cbParam] = cbParam;
+    internalParams[cbParam] = registerKey + "." + cbName;
 
-    preventCache && (internalParams._rnd = new Date().getTime().toString(36));
+    preventCache && (internalParams._rnd = new Date().getTime().toString(36) + randomStr());
 
     Object.keys(internalParams).forEach(param => {
         Object.prototype.hasOwnProperty.call(params, param) &&
-        done(`User query param [${param}] was overridden with internals`);
+        done(`Query param [${param}] can not be set by user`);
     });
-
-
-    params[cbParam] = registerKey + "." + cbName;
-
-    const query = params ? Object.keys(params).map(param => {
-        let rawValue = params[param];
-        return `${param}=${encodeURIComponent(rawValue && typeof rawValue == "object" ?
-            JSON.stringify(rawValue) : ("" + rawValue))}`;
-    }).join("&") : "";
 
     script = document.createElement("script");
     script.type = "text/javascript";
@@ -88,7 +79,7 @@ export default function fetch(url, options, callback) {
         }
     };
 
-    script.src = url + (query ? "?" + query : "");
+    script.src = url + "?" + encodeParams(Object.assign(params, internalParams));
 
     targetNode.appendChild(script);
 

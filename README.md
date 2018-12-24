@@ -2,6 +2,10 @@
 ](https://ci.testling.com/DigitalBrainJS/safe-jsonp)
 # safe-jsonp 
 
+[![](https://badgen.net/bundlephobia/min/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
+[![](https://badgen.net/bundlephobia/minzip/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
+[![](https://badgen.net/npm/license/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
+
 
 A sandboxed JSONP implementation for the browser.
 
@@ -33,7 +37,7 @@ $ npm install safe-jsonp --save
 
 ## Direct usage in the browser
 Use unpkg.com cdn to get link to script/module from the package:
-- unminified UMD ES5 version (~15kB)
+- UMD ES5 version (~15kB)
 ```html
 <script src="https://unpkg.com/safe-jsonp"></script>
 ```
@@ -41,7 +45,7 @@ Use unpkg.com cdn to get link to script/module from the package:
 ```html
 <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.min.js"></script>
 ```
-- unminified ESM ES2015 module (~14kB)
+- ESM ES2015 module (~14kB)
 ```html
 <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.js"></script>
 ```
@@ -54,15 +58,16 @@ Use unpkg.com cdn to get link to script/module from the package:
 ## API
 
 ### JSONP(url: String, [options: Object]): \<Promise>
-### JSONP(url: String, [options: Object], fn: Function): \<JSONP>
+### JSONP(url: String, [options: Object], cb: Function): \<JSONP>
 
   - `url: String` url to fetch
-  - `[options: Object]` [optional]
+  - `[options: Object]`
       - `sandbox: Boolean|Undefined= undefined` sets sandbox mode for query handling to untrusted origins. 
-      Default `undefined` value means prefer sandboxed mode, but allow non-sandboxed query if the environment doesn't support it.
-      In sandboxed mode **all** requests will be done in invisible iframe proxy, created temporally for each origin 
+      Default `undefined` value means prefer sandboxed mode, but allow non-sandboxed query if the environment doesn't 
+      support it. In sandboxed mode all requests will be done in invisible iframe proxy, created temporally for each 
+      origin 
       - `idleTimeout: Number= 15000` idle timeout for each sandbox in ms
-      - `params: Object` Object with query params to combine with a URL
+      - `params: Object` Object with query params to combine with a URL string
       - `timeout: Number= 15000` max query pending time in ms. Default: `15000` (15 seconds)
       - `preventCache: Boolean= true` force disable cache by adding timestamp to a query param `_rnd`
       - `cbParam: String= 'callback'` name of the query param used by backend to get the name of the JSONP callback
@@ -70,8 +75,9 @@ Use unpkg.com cdn to get link to script/module from the package:
       - `abortable: Boolean` enables ability to abort for Promise mode. If this option is set to true, 
       an additional property called abort will be created in options object. 
       This allows to get the abort function via shared options object.  
-- `[fn: Function(err: ?Error, [data: Object])= underfined]` callback function, called when jsonp query is complete 
-(with success or error)
+- `[cb: Function(err: ?Error, [data: Object])]` callback function, called when jsonp query is complete 
+(with success or error). 
+If this argument is omitted, the function returns a Promise, otherwise, a JSONP instance will be returned.
 
 Returns a promise or JSON instance depending on the presence of a callback argument
 
@@ -93,13 +99,19 @@ JSONP('http://api.github.com/users/DigitalBrainJS')
 
 ```javascript
 //in the context of the ES2015 async function
+
+const Promise = require("bluebird");
+
 const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age=23', {
     params: {
         foo: 1,
         bar: [1,2,3]// We can pass objects and arrays as a param value
     },
     
-    timeout: 60000 //60 seconds
+    timeout: 60000, //60 seconds
+    preventCache: true,
+    cbParam: 'callback',
+    Promise
 })
 
 //will make request like https://api.github.com/users/DigitalBrainJS?name=bla&age=23&foo=1&bar=%5B1%2C2%2C3%5D&callback=_jsonpvqz.cb0

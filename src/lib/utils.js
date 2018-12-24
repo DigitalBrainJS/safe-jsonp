@@ -24,6 +24,7 @@ export const generateUniquePropName= (obj, generator= (i)=>`${i.toString(36)}`, 
 const typeCache= Object.create(null);
 
 export const getType= (thing)=>{
+    if (thing === undefined || thing === null) return "" + thing;
     const tag= toString.call(thing);
     return typeCache[tag] || (typeCache[tag]= tag.slice(8, -1).toLowerCase());
 };
@@ -50,7 +51,15 @@ export const testValueType = (name, value, types, fn) => {
     return true;
 };
 
-
+export function once(fn) {
+    let isCalled;
+    return function () {
+        if (!isCalled) {
+            fn.apply(this, arguments);
+            isCalled = true;
+        }
+    }
+}
 
 export function parseParams(rawParams, params = {}){
     if(rawParams) {

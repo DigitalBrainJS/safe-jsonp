@@ -3,7 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Sandbox</title>
-    <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>
+
+
+    <script>
+        var origin = location.origin || (location.protocol + "//" + location.host);
+        var src = origin.indexOf('localhost') ? "/dist/safe-jsonp.umd.js" : "https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.js";
+
+        document.write("<script src='" + src + "'></" + "script>")
+    </script>
+
+
     <style>
         body {
             padding: 25px;
@@ -68,33 +79,24 @@
             textField.value = url;
         }
 
+        const start = new Date().getTime();
+
         JSONP(textField.value, options || {}, function (err, data) {
+            const delay = new Date().getTime() - start;
+
             if (err) {
-                failedHandler(err);
+                logElement.innerHTML = '<div class="failed">JSONP Request failed (' + delay + 'ms)</div><div class="body">' + err + '</div>'
             } else {
-                successHandler(data);
+                logElement.innerHTML = '<div class="success">JSONP Request success (' + delay + 'ms)</div><div class="body">' + JSON.stringify(data) + '</div>'
             }
         })
-    }
-
-    function successHandler(data) {
-        var dataString = JSON.stringify(data),
-            text = '<div class="success">JSONP Request success</div><div class="body">' + dataString + '</div>';
-        console.log('%cJSONP Request success:' + dataString, "color:green");
-        logElement.innerHTML = 'JSONP Request success: ' + dataString;
-    }
-
-    function failedHandler(err) {
-        var text = '<div class="failed">JSONP Request failed</div><div class="body">' + err + '</div>';
-        console.log('%cJSONP Request failed: ' + err, "color:red");
-        logElement.innerHTML = text;
     }
 
     button.onclick = function () {
         fetch(undefined, {sandbox: sandboxControl.checked})
     }
+
 </script>
 
-<script src="http://localhost:8000/jsonp/invalid/syntax"></script>
 </body>
 </html>

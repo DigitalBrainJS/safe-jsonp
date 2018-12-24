@@ -4,7 +4,8 @@ import {
     testValueType,
     encodeParams,
     parseParams,
-    randomStr
+    randomStr,
+    once
 } from "./lib/utils";
 
 import {parseURL} from "./lib/browser";
@@ -39,7 +40,7 @@ export default function JSONP(url, options, callback) {
 
         let {
             sandbox,
-            idleTimeout,
+            idleTimeout = 5000,
             timeout,
             preventCache,
             cbParam,
@@ -51,42 +52,58 @@ export default function JSONP(url, options, callback) {
         const instance = this,
             request = (callback) => {
                 let {origin, pathname, search} = parseURL(url),
-                    urlParams = parseParams(search.slice(1));
+                    urlParams = parseParams(search.slice(1)),
+                    abortFn;
 
                 const computedParams = Object.assign(urlParams, params || null),
                     _url = origin + pathname,
-                    wrappedCallback = (err, data) => callback(err && typeof err !== "object" ? Error(err) : err, data);
-
-                if (sandbox && !Sandbox.isSupported) {
-                    if (sandbox === true) return wrappedCallback("sandbox is not supported");
-                    sandbox = false;
-                }
-
-                const abortQuery = sandbox ?
-                    Sandbox.query({
-                        url: _url,
-                        options: {
-                            params: computedParams,
-                            timeout,
-                            cbParam,
-                            idleTimeout,
-                            preventCache
-                        }
-                    }, (err, response) => err ? wrappedCallback("sandbox error") : wrappedCallback(response.err, response.data))
-
-                    : _fetch(_url, {
+                    done = once((err, data) => callback(err && typeof err !== "object" ? Error(err) : err, data)),
+                    fetch = () => abortFn = _fetch(_url, {
                         timeout,
                         preventCache,
                         params: computedParams,
                         cbParam,
                         registerKey,
                         register
-                    }, wrappedCallback);
+                    }, done);
 
-                instance.abort = abortQuery;
+                if (sandbox !== false) {
+                    Sandbox.whenTested((result) => {
+                        if (result) {
+                            abortFn = Sandbox.query(
+                                {
+                                    data: {
+                                        url: _url,
+                                        options: {
+                                            params: computedParams,
+                                            timeout,
+                                            cbParam,
+                                            preventCache
+                                        },
+                                    },
+                                    timeout,
+                                },
+                                {
+                                    idleTimeout,
+                                    mode: result
+                                },
+                                (err, response) =>
+                                    err ? done(err, response) : done(response.err, response.data)
+                            )
 
-                abortable && (options.abort = abortQuery);
-
+                        } else {
+                            if (sandbox === true) {
+                                done("sandbox is not supported")
+                            } else {
+                                fetch();
+                            }
+                        }
+                    })
+                } else {
+                    fetch();
+                }
+                instance.abort = abortFn;
+                abortable && (options.abort = abortFn);
                 return instance;
             };
 
@@ -101,5 +118,5 @@ export default function JSONP(url, options, callback) {
 Object.assign(JSONP, {
     parseParams,
     encodeParams,
-    parseURL,
+    parseURL
 });

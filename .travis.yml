@@ -9,6 +9,7 @@ env:
   - NODE_ENV=TEST
 before_script:
   - npm run build
-  - npm install testem -g
+  - npm i testem -g
+  - npm i mocha-phantomjs -g
 script:
   - npm run test

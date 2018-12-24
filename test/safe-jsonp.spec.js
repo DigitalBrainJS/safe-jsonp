@@ -11,13 +11,7 @@ const JSONP_URL_HTTP_ERROR = "http://www.mocky.io/v2/5c06a1183300003500ef2b43";
 const JSONP_URL_CB_DATA_MISSING = "http://www.mocky.io/v2/5c06a1663300007600ef2b48";
 const JSONP_URL_CB_TOO_MANY_ARGS = "http://www.mocky.io/v2/5c06a20e3300006c00ef2b4b";
 
-const silentErrorHandler = () => {
-};
-
 describe("JSONP: remote endpoint test", function () {
-
-    //const JSONP_ENDPOINT_VALID= "http://localhost:8000/jsonp/valid";
-
 
     const params = {
             y: 2
@@ -49,7 +43,8 @@ describe("JSONP: remote endpoint test", function () {
         });
 
         it("should return Promise if called without a callback function", function () {
-            const result = JSONP(JSONP_URL_VALID, {sandbox: false}).catch(silentErrorHandler);
+            const result = JSONP(JSONP_URL_VALID, {sandbox: false}).catch(() => {
+            });
 
             expect(result).to.be.an.instanceof(Promise);
         });
