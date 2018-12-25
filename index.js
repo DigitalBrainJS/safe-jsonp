@@ -1,1 +1,1 @@
-module.exports = require('./dist/safe-jsonp.client.umd.js');
+module.exports = require('./dist/safe-jsonp.umd.js');

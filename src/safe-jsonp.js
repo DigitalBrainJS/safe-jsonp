@@ -26,6 +26,7 @@ Object.defineProperty(global, registerKey, {
 });
 
 export default function JSONP(url, options, callback) {
+
     const globalPromise = typeof Promise !== "undefined" ? Promise : null;
 
     return (function (url, options = {}, callback) {
@@ -37,6 +38,11 @@ export default function JSONP(url, options, callback) {
         testValueType("options.params", options.params, ["object", "undefined"]);
         testValueType("options.timeout", options.timeout, ["number", "undefined"]);
         testValueType("options.cbParam", options.cbParam, ["string", "undefined"]);
+
+        if (typeof window == "undefined") {
+            callback(new Error("safe-jsonp requires a browser environment"));
+            return;
+        }
 
         let {
             sandbox,
