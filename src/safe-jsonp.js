@@ -39,11 +39,6 @@ export default function JSONP(url, options, callback) {
         testValueType("options.timeout", options.timeout, ["number", "undefined"]);
         testValueType("options.cbParam", options.cbParam, ["string", "undefined"]);
 
-        if (typeof window == "undefined") {
-            callback(new Error("safe-jsonp requires a browser environment"));
-            return;
-        }
-
         let {
             sandbox,
             idleTimeout = 5000,
