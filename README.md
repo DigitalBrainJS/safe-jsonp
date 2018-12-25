@@ -1,7 +1,5 @@
-[![browser support](https://ci.testling.com/DigitalBrainJS/safe-jsonp.png)
-](https://ci.testling.com/DigitalBrainJS/safe-jsonp)
 # safe-jsonp 
-
+[![Build Status](https://travis-ci.org/DigitalBrainJS/safe-jsonp.svg?branch=master)](https://travis-ci.org/DigitalBrainJS/safe-jsonp)
 [![](https://badgen.net/bundlephobia/min/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
 [![](https://badgen.net/bundlephobia/minzip/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
 [![](https://badgen.net/npm/license/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
