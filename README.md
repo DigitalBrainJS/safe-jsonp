@@ -45,11 +45,11 @@ Use unpkg.com cdn to get link to script/module from the package:
 ```
 - ESM ES2015 module (~14kB)
 ```html
-<script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.js"></script>
+import JSONP from "https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.js"
 ```
 - minified ESM ES2015 module (~7kB)
 ```html
-<script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.min.js"></script>
+import JSONP from "https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.min.js"
 ```
 
 

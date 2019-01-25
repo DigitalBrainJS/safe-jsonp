@@ -10,7 +10,7 @@ const injectResource = (imports) => Object.keys(imports).map((name) => {
         case "string":
             return resource;
         case "function":
-            return `const ${name}= ${resource.toString()}`;
+            return `var ${name}= ${resource.toString()}`;
         default:
             return resource.toString();
     }
