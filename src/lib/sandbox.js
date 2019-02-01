@@ -27,7 +27,8 @@ export default function Sandbox(options) {
             proxy,
             mixin,
             encodeParams,
-            randomStr
+            randomStr,
+            generateUniquePropName
         };
 
     let iframe = document.createElement("iframe"),

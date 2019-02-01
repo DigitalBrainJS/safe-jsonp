@@ -30,9 +30,9 @@ function createBuildTask(entryFile, buildOptions) {
             toES5 = false,
             outFile = `${name}.${format}${ext}`,
             taskTargetName = outFile,
-            minify = false,
             include = "node_modules/**",
-            exclude
+            exclude,
+            minify
         } = buildOptions || {};
 
 
@@ -72,7 +72,7 @@ function createBuildTask(entryFile, buildOptions) {
 
                 noSource: true
             }) : noop())
-            .pipe(minify ? gulp.dest(destPath) : noop())
+            .pipe(minify ? gulp.dest(destPath) : noop());
     });
 
     return taskName;
@@ -91,11 +91,12 @@ gulp.task("webserver", function () {
 });
 
 const clientBuildTask = createBuildTask(clientEntryFile, {exportName: "JSONP", toES5: true, minify: true});
-const clientBuildTaskES = createBuildTask(clientEntryFile, {format: "esm", minify: true});
+const clientBuildTaskES = createBuildTask(clientEntryFile, {format: "esm"});
 const clientBuildTests = createBuildTask("test/safe-jsonp.spec.js", {
     taskTargetName: "test",
     format: "cjs",
-    toES5: true
+    toES5: true,
+    destPath: "./test/"
 });
 
 gulp.task("build", function (done) {

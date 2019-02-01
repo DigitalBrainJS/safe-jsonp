@@ -6,6 +6,8 @@
   "main": "index.js",
   "browser": "./dist/safe-jsonp.umd.js",
   "module": "./dist/safe-jsonp.esm.js",
+  "unpkg": "./dist/safe-jsonp.umd.min.js",
+  "jsnext:main": "./dist/safe-jsonp.esm.js",
   "scripts": {
     "test": "npm run build && mocha-phantomjs test/test.html",
     "build": "shx rm -rf dist && gulp build",
@@ -22,6 +24,11 @@
     "type": "git",
     "url": "https://github.com/DigitalBrainJS/safe-jsonp.git"
   },
+  "files": [
+    "index.js",
+    "esm.js",
+    "./dist/"
+  ],
   "keywords": [
     "jsonp",
     "json",
@@ -37,6 +44,11 @@
     "browser",
     "script",
     "cors"
+  ],
+  "reflinks": [
+    "jsonp",
+    "json",
+    "fetch"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org"

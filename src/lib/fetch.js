@@ -1,4 +1,4 @@
-import {encodeParams, randomStr, mixin} from "./utils";
+import {encodeParams, randomStr, mixin, generateUniquePropName} from "./utils";
 
 export default function fetch(url, options, callback) {
     let wasCalled, isComplete, script, timer;
@@ -19,6 +19,8 @@ export default function fetch(url, options, callback) {
         completeHandler = () => !wasCalled && done("JSONP callback was not called"),
         publicCallback = function (data) {
             const {length} = arguments;
+
+            delete register[cbName];
 
             wasCalled = true;
             if (!length) {
@@ -43,11 +45,7 @@ export default function fetch(url, options, callback) {
         cbParam = "callback";
     }
 
-    let cbName, i = 0;
-
-    while ((cbName = `cb${i.toString(36)}`) in register) {
-        i++;
-    }
+    let cbName = "c" + generateUniquePropName(register, (i) => randomStr(i / 10 + 2));
 
     register[cbName] = publicCallback;
 

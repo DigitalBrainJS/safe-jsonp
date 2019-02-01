@@ -7,23 +7,26 @@
 
 A sandboxed JSONP implementation for the browser.
 
+# Why
+
+If for any reason you still have to use JSONP instead of ajax & CORS on a page with sensitive data to fetch data
+from third-party services, you can use this package which makes jsonp requests more secure using a temporary sandboxed
+iframe as a proxy. This could potentially protect from the XSS attack injected in the jsonp response,
+since the sandbox iframe does not have unsafe access to its parent page. At the same time, json data can be sent
+from iframe to the parent document as a simple json string using the window.postMessage feature. 
+The package supports sandbox and non-sandbox mode (like typical jsonp packages), by default
+sandbox mode is preffered, but not required.
+
 # Features
-- optional sandbox mechanism for safer requests to untrusted origins (internally used iframes)
-- support Promise and callback style
+- **optional sandbox mechanism for safer requests to untrusted origins (internally used iframes)**
+- support Promise and callback styles
 - support custom Promise class
 - anti-caching `_rnd` query param
 - support query params in url string and/or options.params property
 - automatically encoding params, converting objects and arrays params to JSON strings  
 
-## Functional diagram
-Sandbox mode: 
-
-![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/master/public/safe-jsonp.png)
-
 ## Try It!
-[Github demo](http://htmlpreview.github.io/?https://github.com/DigitalBrainJS/safe-jsonp/blob/master/public/index.html)
-
-[JSFiddle.net demo](https://jsfiddle.net/DigitalBrain/ugz5qn0r/10/)
+[JSFiddle.net demo](https://jsfiddle.net/DigitalBrain/ugz5qn0r/)
 
 ## Installation
 
@@ -33,7 +36,31 @@ Install for node.js or browserify using `npm`:
 $ npm install safe-jsonp --save
 ```
 
-## Direct usage in the browser
+## Basic usage example
+Promise style:
+```javascript
+import JSONP from "safe-jsonp";
+
+JSONP('http://api.github.com/users/DigitalBrainJS')
+    .then( data => console.log('JSONP data object:', data))
+    .catch( err => console.warn('Oops...we got an error', err.message))
+```
+
+
+Callback style:
+```javascript
+import JSONP from "safe-jsonp";
+
+JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
+        if(err){
+            console.warn('Oops...we got an error', err.message)
+        }else{
+            console.log('JSON data:', data)
+        }    
+    })
+```
+
+## CDN
 Use unpkg.com cdn to get link to script/module from the package:
 - UMD ES5 version (~15kB)
 ```html
@@ -44,14 +71,62 @@ Use unpkg.com cdn to get link to script/module from the package:
 <script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.min.js"></script>
 ```
 - ESM ES2015 module (~14kB)
-```html
+```javascript
 import JSONP from "https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.js"
 ```
-- minified ESM ES2015 module (~7kB)
-```html
-import JSONP from "https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.min.js"
+## Functional diagram
+Sandbox mode: 
+
+![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/master/public/safe-jsonp.png)
+
+## More examples
+##### additional options:
+```javascript
+const Promise = require("bluebird");
+
+//...async function
+
+const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age=23', {
+    params: {
+        foo: 1,
+        bar: [1,2,3] // We can pass objects and arrays as a param value
+    },
+    
+    timeout: 60000, //60 seconds
+    preventCache: true,
+    cbParam: 'callback',
+    Promise //custom Promise class
+})
+
+//will make request like https://api.github.com/users/DigitalBrainJS?name=bla&age=23&foo=1&bar=%5B1%2C2%2C3%5D&callback=_jsonpvqz.cb0
+//callback param is randomly generated to avoid collisions
+```   
+
+
+##### Force sandbox mode:
+```javascript
+JSONP('http://api.github.com/users/DigitalBrainJS', {sandbox: true})
+    .then(data=>console.log(data), err=>console.warn(err))
+    //will fail if the browser doesn't support sandbox mode or data/blob uri for iframe
 ```
 
+##### Aborting the request:
+```javascript
+const jsonp= JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
+        console.log(err) //Error: aborted  
+    });
+    
+jsonp.abort();
+```
+Or when using Promise:
+```javascript
+const sharedOptions= {abortable: true};
+
+JSONP('http://api.github.com/users/DigitalBrainJS', sharedOptions)
+    .then(data=>console.log(data), err=>console.warn(err));
+    
+sharedOptions.abort();
+```
 
 ## API
 
@@ -88,70 +163,6 @@ Returns a promise or JSON instance depending on the presence of a callback argum
   - `parseParams(url: String): Object` parse URL params string eg. `a=1&b=2` to params object `{a:1, b:2}`
   - `encodeParams(params: Object): String` encode params object to string
   
-## Usage example
-Promise style:
-```javascript
-JSONP('http://api.github.com/users/DigitalBrainJS')
-    .then( data => console.log('JSONP data object:', data), err => console.warn('Oops...we got an error', err.message))
-```
-
-```javascript
-//in the context of the ES2015 async function
-
-const Promise = require("bluebird");
-
-const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age=23', {
-    params: {
-        foo: 1,
-        bar: [1,2,3]// We can pass objects and arrays as a param value
-    },
-    
-    timeout: 60000, //60 seconds
-    preventCache: true,
-    cbParam: 'callback',
-    Promise
-})
-
-//will make request like https://api.github.com/users/DigitalBrainJS?name=bla&age=23&foo=1&bar=%5B1%2C2%2C3%5D&callback=_jsonpvqz.cb0
-//callback param is randomly generated to avoid collisions
-```   
-
-Callback style:
-```javascript
-JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
-        if(err){
-            console.warn('Oops...we got an error', err.message)
-        }else{
-            console.log('JSON data:', data)
-        }    
-    })
-```
-
-Accept sandbox mode only
-```javascript
-JSONP('http://api.github.com/users/DigitalBrainJS', {sandbox: true})
-    .then(data=>console.log(data), err=>console.warn(err))
-
-```
-
-Aborting the request:
-```javascript
-const jsonp= JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
-        console.log(err) //Error: aborted  
-    });
-    
-jsonp.abort();
-```
-Or
-```javascript
-const sharedOptions= {abortable: true};
-
-JSONP('http://api.github.com/users/DigitalBrainJS', sharedOptions)
-    .then(data=>console.log(data), err=>console.warn(err));
-    
-sharedOptions.abort();
-```
-
 ## License
 
 The MIT License (MIT)
