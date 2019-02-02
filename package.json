@@ -24,11 +24,6 @@
     "type": "git",
     "url": "https://github.com/DigitalBrainJS/safe-jsonp.git"
   },
-  "files": [
-    "index.js",
-    "esm.js",
-    "./dist/"
-  ],
   "keywords": [
     "jsonp",
     "json",
