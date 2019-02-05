@@ -3,39 +3,30 @@ import {parseURL, whenDOMReady, addEvent} from "./browser";
 import fetch from "./fetch";
 import proxy from "./proxy";
 
-const injectResource = (imports) => Object.keys(imports).map((name) => {
-    const resource = imports[name];
-
-    switch (getType(resource)) {
-        case "string":
+const injectResources = (imports) => imports.map((resource) => {
+        if (getType(resource) === "function") {
+            const {name} = resource;
+            if (!name) {
+                throw Error(`Cannot resolve fn resource name`);
+            }
+            return `var ${name}=function ` + resource.toString().replace(/^function\s?/, "");
+        } else {
             return resource;
-        case "function":
-            return `var ${name}= ${resource.toString()}`;
-        default:
-            return resource.toString();
+        }
     }
-
-}).join(";\n");
+).join(";\n");
 
 
 const sandboxes = {};
 
 export default function Sandbox(options) {
-    const sandbox = this,
-        imports = {
-            fetch,
-            proxy,
-            mixin,
-            encodeParams,
-            randomStr,
-            generateUniquePropName
-        };
+    const sandbox = this;
 
     let iframe = document.createElement("iframe"),
         queries = {},
         {
             origin,
-            idleTimeout = 15000,
+            idleTimeout = 60000,
             mode = "data"
         } = options || {},
         isReady = false,
@@ -51,8 +42,15 @@ export default function Sandbox(options) {
     const content = [
         "<!DOCTYPE html><html><body>iframe:sandbox<",
         "script>",
-        injectResource(imports),
-        ";proxy();</",
+        injectResources([
+            fetch,
+            proxy,
+            mixin,
+            encodeParams,
+            randomStr,
+            generateUniquePropName
+        ]),
+        `;${proxy.name}();</`,
         "script></body></html>"
     ].join("");
 

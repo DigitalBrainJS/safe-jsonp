@@ -35,13 +35,12 @@ function createBuildTask(entryFile, buildOptions) {
             minify
         } = buildOptions || {};
 
-
     const taskName = `build:${taskTargetName}`;
 
     const rollupPlugins = [
         resolve({jsnext: true}),
         commonjs({
-            include: include === false ? undefined : include,
+            include: include !== false ? include : undefined,
             exclude
         })
     ];
@@ -95,6 +94,7 @@ const clientBuildTaskES = createBuildTask(clientEntryFile, {format: "esm"});
 const clientBuildTests = createBuildTask("test/safe-jsonp.spec.js", {
     taskTargetName: "test",
     format: "cjs",
+    include: ["node_modules/**", "dist/**"],
     toES5: true,
     destPath: "./test/"
 });

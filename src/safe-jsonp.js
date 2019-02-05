@@ -41,7 +41,7 @@ export default function JSONP(url, options, callback) {
 
         let {
             sandbox,
-            idleTimeout = 5000,
+            idleTimeout = 60000,
             timeout,
             preventCache,
             cbParam,

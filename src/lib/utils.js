@@ -13,7 +13,7 @@ export function randomStr(length = 6) {
     return str;
 }
 
-export const generateUniquePropName= (obj, generator= (i)=>`${i.toString(36)}`, maxIterations= 1000)=>{
+export function generateUniquePropName(obj, generator = (i) => `${i.toString(36)}`, maxIterations = 1000) {
     let key, i= 0;
     while((key= generator.call(obj, i)) && key in obj){
         if(i++>maxIterations) return null;
@@ -85,7 +85,9 @@ export function mixin(obj) {
     return obj;
 }
 
-export const encodeParams = (params) => Object.keys(params).map(param => {
-    let rawValue = params[param];
-    return `${param}=${encodeURIComponent(rawValue && typeof rawValue == "object" ? JSON.stringify(rawValue) : ("" + rawValue))}`;
-}).join("&");
+export function encodeParams(params) {
+    return Object.keys(params).map(param => {
+        let rawValue = params[param];
+        return `${param}=${encodeURIComponent(rawValue && typeof rawValue == "object" ? JSON.stringify(rawValue) : ("" + rawValue))}`;
+    }).join("&")
+};

@@ -1,8 +1,9 @@
 /node_modules/
 /.idea/
-.babelrc
+/.babelrc
 /public/
 /test/
 /src/
-gulpfile.js
-.travis.yml
+/trash/
+/gulpfile.js
+/.travis.yml

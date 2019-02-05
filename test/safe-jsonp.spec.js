@@ -1,8 +1,7 @@
-//const chai = require("chai");
-
+import JSONP from "../dist/safe-jsonp.umd.min";
+import chai from "chai";
 
 const {expect}= chai;
-/*const JSONP = require("../dist/safe-jsonp.umd");*/
 
 const JSONP_URL_VALID = "http://www.mocky.io/v2/5c069fbf3300006c00ef2b3e";
 const JSONP_URL_VALID2 = "http://www.mocky.io/v2/5c06a4bb3300006300ef2b61";
@@ -14,11 +13,6 @@ const JSONP_URL_CB_DATA_MISSING = "http://www.mocky.io/v2/5c06a1663300007600ef2b
 const JSONP_URL_CB_TOO_MANY_ARGS = "http://www.mocky.io/v2/5c06a20e3300006c00ef2b4b";
 
 describe("JSONP: remote endpoint test", function () {
-
-    const params = {
-            y: 2
-        },
-        expected = {x: 1};
 
     describe("constructor", function () {
 
@@ -130,6 +124,4 @@ describe("JSONP: remote endpoint test", function () {
 
     makeTests({sandbox: false});
     makeTests({sandbox: true});
-
-
 });

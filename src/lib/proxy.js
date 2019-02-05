@@ -1,3 +1,5 @@
+import fetch from "./fetch";
+
 export default function proxy() {
     const queries = {},
         response = (data) => {

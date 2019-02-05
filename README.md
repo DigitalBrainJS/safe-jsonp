@@ -139,7 +139,7 @@ sharedOptions.abort();
       Default `undefined` value means prefer sandboxed mode, but allow non-sandboxed query if the environment doesn't 
       support it. In sandboxed mode all requests will be done in invisible iframe proxy, created temporally for each 
       origin 
-      - `idleTimeout: Number= 15000` idle timeout for each sandbox in ms
+      - `idleTimeout: Number= 60000` idle timeout for each sandbox in ms
       - `params: Object` Object with query params to combine with a URL string
       - `timeout: Number= 15000` max query pending time in ms. Default: `15000` (15 seconds)
       - `preventCache: Boolean= true` force disable cache by adding timestamp to a query param `_rnd`
