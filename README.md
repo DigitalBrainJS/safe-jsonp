@@ -11,11 +11,11 @@ A sandboxed JSONP implementation for the browser.
 
 If for any reason you still have to use JSONP instead of ajax & CORS on a page with sensitive data to fetch data
 from third-party services, you can use this package which makes jsonp requests more secure using a temporary sandboxed
-iframe as a proxy. This could potentially protect from the XSS attack injected in the jsonp response,
+iframe as a proxy. This could potentially protect from XSS attacks injected in the jsonp response,
 since the sandbox iframe does not have unsafe access to its parent page. At the same time, json data can be sent
 from iframe to the parent document as a simple json string using the window.postMessage feature. 
 The package supports sandbox and non-sandbox mode (like typical jsonp packages), by default
-sandbox mode is preffered, but not required.
+sandbox mode is preferred, but not required.
 
 # Features
 - **optional sandbox mechanism for safer requests to untrusted origins (internally used iframes)**
@@ -61,7 +61,7 @@ JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
 ```
 
 ## CDN
-Use unpkg.com cdn to get link to script/module from the package:
+Use unpkg.com cdn to get the link to the script/module from the package:
 - UMD ES5 version (~15kB)
 ```html
 <script src="https://unpkg.com/safe-jsonp"></script>
@@ -148,7 +148,7 @@ sharedOptions.abort();
       - `abortable: Boolean` enables ability to abort for Promise mode. If this option is set to true, 
       an additional property called abort will be created in options object. 
       This allows to get the abort function via shared options object.  
-- `[cb: Function(err: ?Error, [data: Object])]` callback function, called when jsonp query is complete 
+- `[cb: Function(err: ?Error, [data: Object])]` callback function, called when jsonp request completes
 (with success or error). 
 If this argument is omitted, the function returns a Promise, otherwise, a JSONP instance will be returned.
 
@@ -156,13 +156,15 @@ Returns a promise or JSON instance depending on the presence of a callback argum
 
 ### JSONP class instance
 *instance methods:*
-  - `abort()` aborts the jsonp query with `Error: aborted`, handled by callback or Promise chain.
+  - `abort()` aborts the jsonp query with `Error: aborted`, handled by a callback or Promise chain.
 
 *static methods:*
   - `parseURL(url: String): URL|Object` parse URL into components
-  - `parseParams(url: String): Object` parse URL params string eg. `a=1&b=2` to params object `{a:1, b:2}`
+  - `parseParams(paramsStr: String): Object` parse URL params string eg. `a=1&b=2` to params object `{a:1, b:2}`
   - `encodeParams(params: Object): String` encode params object to string
   
+## Contribution
+ Feel free to fork, open issues, enhance or create pull requests. 
 ## License
 
 The MIT License (MIT)
