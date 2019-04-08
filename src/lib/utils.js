@@ -29,26 +29,24 @@ export const getType= (thing)=>{
     return typeCache[tag] || (typeCache[tag]= tag.slice(8, -1).toLowerCase());
 };
 
-export const testValueType = (name, value, types, fn) => {
+export const testValueType = (name, value, types) => {
     const r= /^[aeiou]/,
         realType= getType(value);
 
     if (!~types.indexOf(realType)) {
-        const error= TypeError(
+        throw TypeError(
             `${name} should be ${r.test(types[0]) ? "an" : "a"} ${types.join("|")},` +
             ` not ${r.test(realType) ? "an" : "a"} ${realType}`
         );
-
-        if(fn){
-            fn(error);
-            return false;
-        }else{
-            throw error;
-        }
-
     }
 
     return true;
+};
+
+export const validateObject = (obj, schema) => {
+    Object.keys(schema).forEach(key => {
+        testValueType(key, obj[key], schema[key]);
+    })
 };
 
 export function once(fn) {

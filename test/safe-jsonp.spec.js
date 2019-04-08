@@ -12,24 +12,39 @@ const JSONP_URL_HTTP_ERROR = "http://www.mocky.io/v2/5c06a1183300003500ef2b43";
 const JSONP_URL_CB_DATA_MISSING = "http://www.mocky.io/v2/5c06a1663300007600ef2b48";
 const JSONP_URL_CB_TOO_MANY_ARGS = "http://www.mocky.io/v2/5c06a20e3300006c00ef2b4b";
 
+/*const timeout= (fn, reason)=>{
+   const timer= setTimeout(()=>{
+      fn(reason);
+   });
+
+   return ()=>{
+       if(timer){
+           clearTimeout(timer);
+           timer=0;
+           fn();
+       }
+
+   }
+};*/
+
 describe("JSONP: remote endpoint test", function () {
 
     describe("constructor", function () {
 
-        it("should throw if the first argument is not a string", function () {
-            expect(JSONP).to.throw();
-            expect(() => JSONP(JSONP_URL_VALID)).to.not.throw();
+        it("should handle error if the first argument is not a string", function (done) {
+            JSONP(undefined, (err) => {
+                err ? done() : done(Error("Does not throw"));
+            });
         });
 
         it("should throw if the options argument is not an Object|Undefined", function () {
-            expect(() => JSONP(JSONP_URL_VALID, 123)).to.throw();
-            expect(() => JSONP(JSONP_URL_VALID, {})).to.not.throw();
+            JSONP(JSONP_URL_VALID, {}, (err) => {
+                err ? done() : done(Error("Does not throw"));
+            });
         });
 
         it("should throw if the callback argument is not a Function|Undefined", function () {
             expect(() => JSONP(JSONP_URL_VALID, {}, 123)).to.throw();
-            expect(() => JSONP(JSONP_URL_VALID, {}, () => {
-            })).to.not.throw();
         });
 
         it("should allow to omit the options param", function () {

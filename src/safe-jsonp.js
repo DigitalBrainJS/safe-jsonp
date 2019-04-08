@@ -2,6 +2,7 @@ import {
     global,
     generateUniquePropName,
     testValueType,
+    validateObject,
     encodeParams,
     parseParams,
     randomStr,
@@ -25,19 +26,20 @@ Object.defineProperty(global, registerKey, {
     }
 });
 
+/**
+ * Makes JSONP request
+ * @param {String} url
+ * @param {Object} [options]
+ * @param {Boolean} [options.sandbox]
+ * @param {Object} [options.params]
+ * @param {Object} [options.abortable]
+ * @param {Number} [options.timeout]
+ * @param {String} [options.cbParam]
+ * @returns {JSONP|Promise}
+ */
+
 export default function JSONP(url, options, callback) {
-
-    const globalPromise = typeof Promise !== "undefined" ? Promise : null;
-
     return (function (url, options = {}, callback) {
-        testValueType("url", url, ["string"]);
-        testValueType("options", options, ["object"]);
-        testValueType("callback", callback, ["function", "undefined"]);
-
-        testValueType("options.sandbox", options.sandbox, ["boolean", "undefined"]);
-        testValueType("options.params", options.params, ["object", "undefined"]);
-        testValueType("options.timeout", options.timeout, ["number", "undefined"]);
-        testValueType("options.cbParam", options.cbParam, ["string", "undefined"]);
 
         let {
             sandbox,
@@ -46,20 +48,39 @@ export default function JSONP(url, options, callback) {
             preventCache,
             cbParam,
             abortable,
-            Promise: _Promise = globalPromise,
             params
         } = options;
-
         const instance = this,
             request = (callback) => {
-                let {origin, pathname, search} = parseURL(url),
-                    urlParams = parseParams(search.slice(1)),
+                try {
+                    const u = "undefined", b = "boolean";
+                    testValueType("url", url, ["string"]);
+                    testValueType("options", options, ["object"]);
+                    validateObject(options, {
+                        sandbox: [b, u],
+                        params: ["object", u],
+                        timeout: ["number", u],
+                        abortable: [b, u],
+                        preventCache: [b, u],
+                        cbParam: ["string", u],
+                    });
+                } catch (e) {
+                    callback(e);
+                    return;
+                }
+
+                let {
+                    origin,
+                    pathname,
+                    search
+                } = parseURL(url);
+                let urlParams = parseParams(search.slice(1)),
                     abortFn;
 
                 const computedParams = Object.assign(urlParams, params || null),
                     _url = origin + pathname,
                     done = once((err, data) => callback(err && typeof err !== "object" ? Error(err) : err, data)),
-                    fetch = () => abortFn = _fetch(_url, {
+                    fetch = () => _fetch(_url, {
                         timeout,
                         preventCache,
                         params: computedParams,
@@ -96,21 +117,31 @@ export default function JSONP(url, options, callback) {
                             if (sandbox === true) {
                                 done("sandbox is not supported")
                             } else {
-                                fetch();
+                                abortFn = fetch();
                             }
                         }
                     })
                 } else {
-                    fetch();
+                    abortFn = fetch();
                 }
                 instance.abort = abortFn;
                 abortable && (options.abort = abortFn);
                 return instance;
             };
 
-        return callback ? request(callback) : new _Promise((resolve, reject) => {
-            request((err, data) => err ? reject(err) : resolve(data))
-        })
+        if (callback) {
+            testValueType("callback", callback, ["function", "undefined"]);
+            return request(callback);
+        } else {
+            const _Promise = options && options.Promise || (typeof Promise !== "undefined" ? Promise : null);
+            if (!_Promise) {
+                throw Error("Unable to use Promise class");
+            }
+
+            return new _Promise((resolve, reject) => {
+                request((err, data) => err ? reject(err) : resolve(data))
+            })
+        }
 
     }).apply(this instanceof JSONP ? this : Object.create(JSONP.prototype), typeof options === "function" ?
         [url, undefined, options] : [url, options, callback]);
