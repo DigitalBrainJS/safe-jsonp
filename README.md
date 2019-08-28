@@ -18,7 +18,9 @@ The package supports sandbox and non-sandbox mode (like typical jsonp packages),
 sandbox mode is preferred, but not required.
 
 # Features
-- **optional sandbox mechanism for safer requests to untrusted origins (internally used iframes)**
+- :zap: **exclusive: optional sandbox mechanism for safer requests to untrusted origins (internally used iframes)**
+- :zap: **exclusive: ability to abort the related http request in sandbox mode- other libs can't do this at all,
+ they just ignore the response, but related http query keeps in pending state for some time**
 - support Promise and callback styles
 - support custom Promise class
 - anti-caching `_rnd` query param
