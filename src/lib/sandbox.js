@@ -27,7 +27,7 @@ export default function Sandbox(options) {
         {
             origin,
             idleTimeout = 60000,
-            mode = "data"
+            mode = "data",
         } = options || {},
         isReady = false,
         readyHandlers = [],
@@ -116,7 +116,7 @@ export default function Sandbox(options) {
                 }
 
                 if (!Object.keys(queries).length) {
-                    idleTimeout >= 0 && (idleTimer = setTimeout(() => {
+                    idleTimeout !== false && (idleTimer = setTimeout(() => {
                         idleTimer = null;
                         destroy();
                     }, idleTimeout));
@@ -154,7 +154,8 @@ export default function Sandbox(options) {
 Object.assign(Sandbox, {
     query(data, options, callback) {
         const {origin} = parseURL(data.url);
-        return (origin && sandboxes[origin] || new Sandbox(Object.assign({origin}, options))).query(data, callback);
+        const {dedicated} = options || {};
+        return (origin && !dedicated && sandboxes[origin] || new Sandbox(Object.assign({origin}, options))).query(data, callback);
     },
 
     whenTested: ((data) => {

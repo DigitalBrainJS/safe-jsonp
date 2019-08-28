@@ -20,7 +20,7 @@
             padding: 25px;
         }
 
-        #url {
+        #input-url {
             width: 600px;
         }
 
@@ -30,10 +30,25 @@
 
         #log {
             color: white;
+            margin-top: 20px;
+            font-size: 16px;
         }
 
         #log > div {
             padding: 20px;
+            margin-top: 10px;
+        }
+
+        .options {
+            padding: 5px;
+        }
+
+        .btn-abort {
+            float: right;
+            font-size: 36px;
+            margin: -20px -10px 0px 0px;
+            text-decoration: none;
+            color: white;
         }
 
         #log > .body {
@@ -46,54 +61,138 @@
 
         .success {
             background-color: green;
-
         }
 
         .failed {
             background-color: red;
-
         }
+
+        .pending {
+            background-color: #d29908;
+        }
+
+        .lds-dual-ring {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            /*float: left;*/
+        }
+
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 10px;
+            height: 10px;
+            margin: 1px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            border-color: #fff transparent #fff transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
     </style>
 </head>
 <body>
 
 <div class="container">
     <h3>Here you can play with safe-jsonp lib</h3>
-    <input id="url" type="text" class="container-fluid" value="http://api.github.com/users/DigitalBrainJS">
+    Some endpoints:
+    <ul id="links">
+        <li><a href="http://www.mocky.io/v2/5c069fbf3300006c00ef2b3e?mocky-delay=15s">Slow query 15s (www.mocky.io)</a>
+        </li>
+        <li><a href="http://www.mocky.io/v2/5c069fbf3300006c00ef2b3e?mocky-delay=60s">Very slow query 60s
+            (www.mocky.io)</a></li>
+        <li><a href="http://www.mocky.io/v2/5c06a0143300007600ef2b40">Invalid syntax (www.mocky.io)</a></li>
+        <li><a href="http://www.mocky.io/v2/5c06a1183300003500ef2b43">Http error (www.mocky.io)</a></li>
+        <li><a href="http://www.mocky.io/v2/5c06a1663300007600ef2b48">Cb data missing (www.mocky.io)</a></li>
+        <li><a href="http://www.mocky.io/v2/5c06a20e3300006c00ef2b4b">too many args (www.mocky.io)</a></li>
+        <li><a href="http://localhost:8000/jsonp/valid?delay=10">Slow query 10s (localhost)</a></li>
+        <li><a href="http://localhost:8000/jsonp/valid?delay=60">Very slow query 60s (localhost)</a></li>
+    </ul>
+    <input id="input-url" type="text" class="container-fluid" value="http://api.github.com/users/DigitalBrainJS">
     <button id="fetch">Fetch Url</button>
-    <label for="sandbox-checkbox">use sandbox mode</label><input id="sandbox-checkbox" type="checkbox" checked>
+    <div class="options">
+        <label for="sandbox-checkbox">use sandbox mode</label><input id="sandbox-checkbox" type="checkbox" checked>
+        <label for="abortable-checkbox">abortable</label><input id="abortable-checkbox" type="checkbox" checked>
+        <span>
+        <input type="number" id="start" name="timeout-control"
+               min="0" max="60000" value="15000">
+        <label for="timeout-control">Timeout (ms)</label>
+    </span>
+    </div>
     <div id="log">
-        <div>Test</div>
     </div>
 </div>
 
 <script>
 
-    var logElement = document.getElementById('log');
-    var textField = document.getElementById('url');
-    var button = document.getElementById('fetch');
-    var sandboxControl = document.getElementById('sandbox-checkbox');
+    let logElement = document.getElementById('log');
+    let textField = document.getElementById('input-url');
+    let button = document.getElementById('fetch');
+    let sandboxControl = document.getElementById('sandbox-checkbox');
+    let abortableCheckbox = document.getElementById('abortable-checkbox');
+
+    document.getElementById('links').onclick = function (e) {
+        const href = e.target.href;
+        if (href) {
+            e.preventDefault();
+            textField.value = href;
+        }
+    };
 
     function fetch(url, options) {
         if (url !== undefined) {
             textField.value = url;
+        } else {
+            url = textField.value;
         }
 
         const start = new Date().getTime();
 
-        JSONP(textField.value, options || {}, function (err, data) {
+
+        let query = JSONP(url, options || {}, function (err, data) {
             const delay = new Date().getTime() - start;
 
-            if (err) {
-                logElement.innerHTML = '<div class="failed">JSONP Request failed (' + delay + 'ms)</div><div class="body">' + err + '</div>'
-            } else {
-                logElement.innerHTML = '<div class="success">JSONP Request success (' + delay + 'ms)</div><div class="body">' + JSON.stringify(data) + '</div>'
-            }
-        })
+
+            el.className = err ? 'failed' : 'success';
+            el.innerHTML = err ? 'JSONP Request failed (' + delay + 'ms)</div><div class="body">' + err
+                : 'JSONP Request success (' + delay + 'ms)</div><div class="body">' + JSON.stringify(data);
+
+            setTimeout(() => {
+                logElement.removeChild(el);
+            }, 5000);
+        });
+
+        const el = document.createElement('div');
+        el.className = 'pending';
+        el.innerHTML = '<div class="lds-dual-ring"></div>Requesting <i>' + url + '</i><a href="#" class="btn-abort">×</a>';
+
+        const abortBtn = el.getElementsByClassName('btn-abort')[0];
+
+        abortBtn.onclick = function () {
+            query && query.abort();
+            query = null;
+        };
+
+        logElement.appendChild(el);
     }
 
     button.onclick = function () {
-        fetch(undefined, {sandbox: sandboxControl.checked})
+        fetch(undefined, {
+            sandbox: sandboxControl.checked,
+            abortable: abortableCheckbox.checked,
+            timeout: 30000
+        })
     }
 
 </script>

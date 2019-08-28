@@ -10,8 +10,10 @@ export default function fetch(url, options, callback) {
                 if (script) {
                     targetNode.removeChild(script);
                     script.type = "";
+                    script.src = "#";
+                    script.setAttribute("timeout", 1);
+                    script = null;
                 }
-
                 callback(err, data);
             }
         },

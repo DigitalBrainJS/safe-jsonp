@@ -147,7 +147,8 @@ sharedOptions.abort();
       - `Promise: Function` Promise class that be used instead of native (if environment supports it)  
       - `abortable: Boolean` enables ability to abort for Promise mode. If this option is set to true, 
       an additional property called abort will be created in options object. 
-      This allows to get the abort function via shared options object.  
+      This allows to get the abort function via shared options object. 
+      Additionally if sandbox mode is set (and it supported by a browser) this mode allows to abort the related http request of internal script element. 
 - `[cb: Function(err: ?Error, [data: Object])]` callback function, called when jsonp request completes
 (with success or error). 
 If this argument is omitted, the function returns a Promise, otherwise, a JSONP instance will be returned.

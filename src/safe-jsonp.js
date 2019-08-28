@@ -48,6 +48,7 @@ export default function JSONP(url, options, callback) {
             preventCache,
             cbParam,
             abortable,
+            dedicated,
             params
         } = options;
         const instance = this,
@@ -61,6 +62,7 @@ export default function JSONP(url, options, callback) {
                         params: ["object", u],
                         timeout: ["number", u],
                         abortable: [b, u],
+                        dedicated: [b, u],
                         preventCache: [b, u],
                         cbParam: ["string", u],
                     });
@@ -92,6 +94,10 @@ export default function JSONP(url, options, callback) {
                 if (sandbox !== false) {
                     Sandbox.whenTested((result) => {
                         if (result) {
+                            if (abortable) {//Force sandbox mode
+                                dedicated = true;
+                                idleTimeout = 0;
+                            }
                             abortFn = Sandbox.query(
                                 {
                                     data: {
@@ -107,7 +113,8 @@ export default function JSONP(url, options, callback) {
                                 },
                                 {
                                     idleTimeout,
-                                    mode: result
+                                    mode: result,
+                                    dedicated: abortable
                                 },
                                 (err, response) =>
                                     err ? done(err, response) : done(response.err, response.data)
