@@ -68,6 +68,7 @@ export default function Sandbox(options) {
                 const response = JSON.parse(e.data),
                     {key} = response;
                 queries[key] && queries[key](response);
+                // eslint-disable-next-line no-empty
             } catch (e) {
             }
         }, false),
@@ -143,7 +144,7 @@ export default function Sandbox(options) {
         }
     };
 
-    iframe.src = mode == "blob" ?
+    iframe.src = mode === "blob" ?
         (blobUrl = URL.createObjectURL(new Blob([content], {type: "text/html"}))) :
         "data:text/html;charset=utf-8," + encodeURIComponent(content);
 
@@ -159,7 +160,7 @@ Object.assign(Sandbox, {
     },
 
     whenTested: ((data) => {
-        let result, i = 0, sandbox;
+        let result, i = 0;
 
         const {userAgent} = navigator,
             handlers = [],

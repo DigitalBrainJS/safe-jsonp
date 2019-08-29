@@ -19,7 +19,7 @@ export function generateUniquePropName(obj, generator = (i) => `${i.toString(36)
         if(i++>maxIterations) return null;
     }
     return key;
-};
+}
 
 const typeCache= Object.create(null);
 
@@ -70,7 +70,7 @@ export function parseParams(rawParams, params = {}){
         });
     }
     return params;
-};
+}
 
 export function mixin(obj) {
     let i = arguments.length, props = {};
@@ -88,4 +88,4 @@ export function encodeParams(params) {
         let rawValue = params[param];
         return `${param}=${encodeURIComponent(rawValue && typeof rawValue == "object" ? JSON.stringify(rawValue) : ("" + rawValue))}`;
     }).join("&")
-};
+}

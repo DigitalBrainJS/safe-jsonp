@@ -8,13 +8,14 @@ export default function proxy() {
 
     window.addEventListener("message", (e) => {
         const {key, action, data} = JSON.parse(e.data);
+        let query;
         try {
             switch (action) {
                 case "test":
                     response({key, data});
                     break;
                 case "abort":
-                    const query = queries[key];
+                    query = queries[key];
                     query && query();
                     break;
                 default:

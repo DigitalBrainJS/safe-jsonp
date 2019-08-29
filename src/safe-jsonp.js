@@ -35,6 +35,7 @@ Object.defineProperty(global, registerKey, {
  * @param {Object} [options.abortable]
  * @param {Number} [options.timeout]
  * @param {String} [options.cbParam]
+ * @param {Function} [callback]
  * @returns {JSONP|Promise}
  */
 
@@ -48,7 +49,6 @@ export default function JSONP(url, options, callback) {
             preventCache,
             cbParam,
             abortable,
-            dedicated,
             params
         } = options;
         const instance = this,
@@ -94,8 +94,7 @@ export default function JSONP(url, options, callback) {
                 if (sandbox !== false) {
                     Sandbox.whenTested((result) => {
                         if (result) {
-                            if (abortable) {//Force sandbox mode
-                                dedicated = true;
+                            if (abortable) {
                                 idleTimeout = 0;
                             }
                             abortFn = Sandbox.query(

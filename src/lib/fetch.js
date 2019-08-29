@@ -73,21 +73,18 @@ export default function fetch(url, options, callback) {
     script.onload = completeHandler;
 
     script.onreadystatechange = function () {
-        if (script.readyState == "complete" || script.readyState == "loaded") {
+        if (script.readyState === "complete" || script.readyState === "loaded") {
             script.onreadystatechange = null;
             completeHandler();
         }
     };
-
-    const computedParams = {};
-
 
     script.src = url + "?" + encodeParams(mixin(params, internalParams));
 
     targetNode.appendChild(script);
 
     return () => done("aborted");
-};
+}
 
 
 

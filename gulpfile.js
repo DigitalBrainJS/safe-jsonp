@@ -124,7 +124,7 @@ gulp.task("jsonp-server", function () {
 });
 
 
-gulp.task("dev", function (done) {
+gulp.task("dev", function () {
     isDevMode= true;
 
     runSequence(["build:dev", "webserver"], clientBuildTests, "jsonp-server", function () {

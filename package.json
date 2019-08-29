@@ -15,7 +15,8 @@
     "dev": "gulp dev",
     "jsonp-server": "gulp jsonp-server",
     "prepublish": "npm test",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "lint": "eslint src"
   },
   "license": "MIT",
   "homepage": "https://github.com/DigitalBrainJS/safe-jsonp",
@@ -58,6 +59,7 @@
     "@babel/plugin-transform-template-literals": "^7.2.0",
     "chai": "^4.2.0",
     "connect": "^3.6.6",
+    "eslint": "^6.2.2",
     "expect": "^23.6.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",

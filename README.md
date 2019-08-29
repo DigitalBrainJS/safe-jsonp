@@ -5,7 +5,7 @@
 [![](https://badgen.net/npm/license/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
 
 
-A sandboxed JSONP implementation for the browser.
+A sandboxed JSONP implementation for browsers.
 
 # Why
 
@@ -95,7 +95,7 @@ const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age
     },
     
     timeout: 60000, //60 seconds
-    preventCache: true,
+    preventCache: true,//add _rnd query param with random value
     cbParam: 'callback',
     Promise //custom Promise class
 })
@@ -123,6 +123,7 @@ jsonp.abort();
 Or when using Promise:
 ```javascript
 const sharedOptions= {abortable: true};
+//new method "abort" will be attached to this object
 
 JSONP('http://api.github.com/users/DigitalBrainJS', sharedOptions)
     .then(data=>console.log(data), err=>console.warn(err));
