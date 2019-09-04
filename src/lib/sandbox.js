@@ -37,7 +37,7 @@ export default function Sandbox(options) {
     !dedicated && origin && (sandboxes[origin] = sandbox);
 
     iframe.setAttribute("sandbox", "allow-scripts");
-    //iframe.style.display = "none";
+    iframe.style.display = "none";
 
     const content = [
         "<!DOCTYPE html><html><body>iframe:sandbox<",
