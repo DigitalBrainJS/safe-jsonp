@@ -18,14 +18,16 @@ const server = http.createServer((request, response) => {
     const params = querystring.parse(search.slice(1));
     let {callback, cb, delay = 0} = params;
 
-    console.log(`Connection from ${remoteAddress}:${remotePort} [${url}]`);
+    const started = Date.now();
+
+    console.log(`Connection from ${remoteAddress}:${remotePort} [${url}] [${(new Date).toLocaleString()}]`);
 
     request.once("close", () => {
-        console.log(`Connection from ${remoteAddress}:${remotePort} aborted`);
+        console.log(`Connection from ${remoteAddress}:${remotePort} aborted [${(new Date).toLocaleString()}] [${(Date.now() - started)}ms]`);
     });
 
     request.once("end", () => {
-        console.log(`Connection from ${remoteAddress}:${remotePort} closed`);
+        console.log(`Connection from ${remoteAddress}:${remotePort} closed [${(new Date).toLocaleString()}] [${(Date.now() - started)}ms]`);
     });
 
     setTimeout(() => {

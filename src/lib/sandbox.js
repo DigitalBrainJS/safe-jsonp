@@ -16,7 +16,6 @@ const injectResources = (imports) => imports.map((resource) => {
     }
 ).join(";\n");
 
-
 const sandboxes = {};
 
 export default function Sandbox(options) {
@@ -28,16 +27,17 @@ export default function Sandbox(options) {
             origin,
             idleTimeout = 60000,
             mode = "data",
+            dedicated,
         } = options || {},
         isReady = false,
         readyHandlers = [],
         idleTimer,
         blobUrl;
 
-    origin && (sandboxes[origin] = sandbox);
+    !dedicated && origin && (sandboxes[origin] = sandbox);
 
     iframe.setAttribute("sandbox", "allow-scripts");
-    iframe.style.display = "none";
+    //iframe.style.display = "none";
 
     const content = [
         "<!DOCTYPE html><html><body>iframe:sandbox<",
@@ -54,13 +54,7 @@ export default function Sandbox(options) {
         "script></body></html>"
     ].join("");
 
-    const removeLoadListener = addEvent(iframe, "load", () => {
-        removeLoadListener();
-        blobUrl && URL.revokeObjectURL(blobUrl);
-        isReady = true;
-        readyHandlers.map(handler => handler.call(sandbox));
-        readyHandlers = [];
-    });
+
 
     const whenReady = (callback) => isReady ? callback.call(sandbox) : readyHandlers.push(callback),
         removeMessageListener = addEvent(window, "message", (e) => {
@@ -68,7 +62,6 @@ export default function Sandbox(options) {
                 const response = JSON.parse(e.data),
                     {key} = response;
                 queries[key] && queries[key](response);
-                // eslint-disable-next-line no-empty
             } catch (e) {
             }
         }, false),
@@ -81,23 +74,29 @@ export default function Sandbox(options) {
         destroy = () => {
             if (iframe) {
 
-                if (origin) {
+                if (!dedicated && origin) {
                     delete sandboxes[origin];
                 }
 
                 stopIdleTimer();
-
                 removeMessageListener();
+                sendData(null, {action: 'destroy'});
 
-                iframe.parentNode && iframe.parentNode.removeChild(iframe);
-
-                iframe = null;
+                setTimeout(() => {
+                    setContent("<!DOCTYPE html><html></html>", () => {
+                        iframe.parentNode && iframe.parentNode.removeChild(iframe);
+                        iframe = null;
+                    });
+                }, 0);
             }
         };
 
     sandbox.whenReady = whenReady;
 
     sandbox.destroy = destroy;
+
+    const sendData = (key, request) =>
+        whenReady(() => iframe.contentWindow.postMessage(JSON.stringify(Object.assign({key}, request)), "*"));
 
     sandbox.query = (request, callback) => {
 
@@ -125,28 +124,45 @@ export default function Sandbox(options) {
             },
             done = once((err, data) => {
                 cleanup();
-                callback.call(sandbox, err, data);
-            }),
-            sendData = (request) =>
-                whenReady(() => iframe.contentWindow.postMessage(JSON.stringify(Object.assign({key}, request)), "*"));
+                callback && callback.call(sandbox, err, data);
+            });
+
 
         queries[key] = (response) => {
             done(response.err, response.data)
         };
 
-        sendData(request);
+        sendData(key, request);
 
         return () => {
             if (queries[key]) {
-                sendData({action: "abort"});
+                sendData(key, {action: "abort"});
                 done("aborted");
             }
         }
     };
 
-    iframe.src = mode === "blob" ?
-        (blobUrl = URL.createObjectURL(new Blob([content], {type: "text/html"}))) :
-        "data:text/html;charset=utf-8," + encodeURIComponent(content);
+    let removeLoadListener;
+
+    const setContent = (content, cb) => {
+        removeLoadListener && removeLoadListener();
+
+        removeLoadListener = addEvent(iframe, "load", () => {
+            blobUrl && URL.revokeObjectURL(blobUrl);
+            blobUrl = null;
+            cb && cb();
+        }, true);
+
+        iframe.src = mode === "blob" ?
+            (blobUrl = URL.createObjectURL(new Blob([content], {type: "text/html"}))) :
+            "data:text/html;charset=utf-8," + encodeURIComponent(content);
+    };
+
+    setContent(content, () => {
+        isReady = true;
+        readyHandlers.map(handler => handler.call(sandbox));
+        readyHandlers = [];
+    });
 
     whenDOMReady(() => document.body.appendChild(iframe));
 }

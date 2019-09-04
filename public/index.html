@@ -159,7 +159,6 @@
 
         const start = new Date().getTime();
 
-
         let query = JSONP(url, options || {}, function (err, data) {
             const delay = new Date().getTime() - start;
 
@@ -170,7 +169,7 @@
 
             setTimeout(() => {
                 logElement.removeChild(el);
-            }, 5000);
+            }, err ? 5000 : 15000);
         });
 
         const el = document.createElement('div');

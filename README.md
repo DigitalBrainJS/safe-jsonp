@@ -1,8 +1,8 @@
 # safe-jsonp 
 [![Build Status](https://travis-ci.org/DigitalBrainJS/safe-jsonp.svg?branch=master)](https://travis-ci.org/DigitalBrainJS/safe-jsonp)
-[![](https://badgen.net/bundlephobia/min/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
-[![](https://badgen.net/bundlephobia/minzip/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
-[![](https://badgen.net/npm/license/safe-jsonp)](https://unpkg.com/safe-jsonp@0.1.5/dist/safe-jsonp.umd.js)
+[![](https://badgen.net/bundlephobia/min/safe-jsonp)](https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.js)
+[![](https://badgen.net/bundlephobia/minzip/safe-jsonp)](https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.js)
+[![](https://badgen.net/npm/license/safe-jsonp)](https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.js)
 
 
 A sandboxed JSONP implementation for browsers.
@@ -46,6 +46,10 @@ import JSONP from "safe-jsonp";
 JSONP('http://api.github.com/users/DigitalBrainJS')
     .then( data => console.log('JSONP data object:', data))
     .catch( err => console.warn('Oops...we got an error', err.message))
+
+//or inside an async function 
+const response= await JSONP('http://api.github.com/users/DigitalBrainJS');
+console.log(response);
 ```
 
 
@@ -100,7 +104,7 @@ const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age
     Promise //custom Promise class
 })
 
-//will make request like https://api.github.com/users/DigitalBrainJS?name=bla&age=23&foo=1&bar=%5B1%2C2%2C3%5D&callback=_jsonpvqz.cb0
+//will make a request like https://api.github.com/users/DigitalBrainJS?name=bla&age=23&foo=1&bar=%5B1%2C2%2C3%5D&callback=_jsonpvqz.cb0
 //callback param is randomly generated to avoid collisions
 ```   
 
@@ -109,7 +113,7 @@ const data= await JSONP('http://api.github.com/users/DigitalBrainJS?name=bla&age
 ```javascript
 JSONP('http://api.github.com/users/DigitalBrainJS', {sandbox: true})
     .then(data=>console.log(data), err=>console.warn(err))
-    //will fail if the browser doesn't support sandbox mode or data/blob uri for iframe
+    //will fail if the current browser doesn't support sandbox mode or data/blob uri for iframe
 ```
 
 ##### Aborting the request:

@@ -9,7 +9,7 @@
   "unpkg": "./dist/safe-jsonp.umd.min.js",
   "jsnext:main": "./dist/safe-jsonp.esm.js",
   "scripts": {
-    "test": "npm run build && mocha-phantomjs test/test.html",
+    "test": "npm run build && mocha-headless-chrome -f test/test.html",
     "build": "shx rm -rf dist && gulp build",
     "watch": "gulp watch",
     "dev": "gulp dev",
@@ -27,19 +27,16 @@
   },
   "keywords": [
     "jsonp",
+    "cors",
     "json",
+    "xhr",
     "safe",
     "fetch",
-    "secure",
-    "get",
-    "load",
+    "browser",
     "ajax",
     "http",
     "sandbox",
-    "promise",
-    "browser",
-    "script",
-    "cors"
+    "promise"
   ],
   "reflinks": [
     "jsonp",
@@ -59,22 +56,24 @@
     "@babel/plugin-transform-template-literals": "^7.2.0",
     "chai": "^4.2.0",
     "connect": "^3.6.6",
-    "eslint": "^6.2.2",
-    "expect": "^23.6.0",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^7.0.1",
-    "gulp-better-rollup": "^3.3.0",
+    "eslint": "^6.3.0",
+    "expect": "^24.9.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-better-rollup": "^4.0.1",
     "gulp-minify": "^3.1.0",
-    "gulp-plumber": "^1.2.0",
+    "gulp-plumber": "^1.2.1",
     "gulp-rename": "^1.4.0",
-    "mocha": "^5.2.0",
-    "mocha-phantomjs": "^4.1.0",
-    "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-commonjs": "^9.1.4",
-    "rollup-plugin-node-resolve": "^3.4.0",
+    "mocha": "^6.2.0",
+    "rollup": "^1.20.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "run-sequence": "^2.2.1",
-    "serve-static": "^1.13.2",
-    "shx": "^0.3.2"
+    "serve-static": "^1.14.1",
+    "shx": "^0.3.2",
+    "mocha-headless-chrome": "^2.0.3"
   },
-  "dependencies": {}
+  "dependencies": {
+  }
 }

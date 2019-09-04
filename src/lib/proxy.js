@@ -18,6 +18,10 @@ export default function proxy() {
                     query = queries[key];
                     query && query();
                     break;
+                case "destroy":
+                    document.execCommand && document.execCommand('Stop');
+                    window.stop && window.stop();
+                    break;
                 default:
                     if (!data.url) {
                         throw Error("url required");
