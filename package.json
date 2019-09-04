@@ -1,6 +1,6 @@
 {
   "name": "safe-jsonp",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "safer jsonp client with sandbox and Promise support",
   "author": "Dmitriy Mozgovoy",
   "main": "index.js",
