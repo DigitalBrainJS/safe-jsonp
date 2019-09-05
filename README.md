@@ -5,37 +5,35 @@
 [![](https://badgen.net/npm/license/safe-jsonp)](https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.js)
 
 
-A sandboxed JSONP implementation for browsers.
-
-# Why
-
-If for any reason you still have to use JSONP instead of ajax & CORS on a page with sensitive data to fetch data
-from third-party services, you can use this package which makes jsonp requests more secure using a temporary sandboxed
-iframe as a proxy. This could potentially protect from XSS attacks injected in the jsonp response,
-since the sandbox iframe does not have unsafe access to its parent page. At the same time, json data can be sent
-from iframe to the parent document as a simple json string using the window.postMessage feature. 
-The package supports sandbox and non-sandbox mode (like typical jsonp packages), by default
-sandbox mode is preferred, but not required.
+:star: A safer JSONP implementation for browsers with extra features :star:
 
 # Features
-- :zap: **exclusive: optional sandbox mechanism for safer requests to untrusted origins (internally used iframes)**
-- :zap: **exclusive: ability to abort the related http request in sandbox mode- other libs can't do this at all,
- they just ignore the response, but related http query keeps in pending state for some time**
-- support Promise and callback styles
-- support custom Promise class
-- anti-caching `_rnd` query param
-- support query params in url string and/or options.params property
+- :zap: **safer requests to untrusted origins using optional sandbox mechanism\* (iframes & postMessage used inside)**
+- :zap: **can abort the related http requests\** (other libs just ignore the response, but related http query keeps in pending state for some time**
+- :heavy_check_mark: no dependencies
+- :heavy_check_mark: CDN friendly
+- supports Promise and callback styles
+- supports custom Promise class
+- supports query params in url string and/or options.params property
 - automatically encoding params, converting objects and arrays params to JSON strings  
+- anti-caching `_rnd` query param
 
+\* this feature works only in modern browsers (except all IE).
+
+\** not available in IE, Edge has partial support. 
 ## Try It!
 [JSFiddle.net demo](https://jsfiddle.net/DigitalBrain/ugz5qn0r/)
 
 ## Installation
 
-Install for node.js or browserify using `npm`:
+Install for node.js or browserify using npm or yarn:
 
 ``` bash
 $ npm install safe-jsonp --save
+```
+
+``` bash
+$ yarn add safe-jsonp
 ```
 
 ## Basic usage example
@@ -68,22 +66,16 @@ JSONP('http://api.github.com/users/DigitalBrainJS', (err, data) => {
 
 ## CDN
 Use unpkg.com cdn to get the link to the script/module from the package:
-- UMD ES5 version (~15kB)
+- minified (production) UMD ES5 version (~7kB)
 ```html
 <script src="https://unpkg.com/safe-jsonp"></script>
 ```
-- minified UMD ES5 version (~7kB)
-```html
-<script src="https://unpkg.com/safe-jsonp/dist/safe-jsonp.umd.min.js"></script>
-```
-- ESM ES2015 module (~14kB)
+- ESM ES2015 module(~14kB)
 ```javascript
 import JSONP from "https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.js"
+//or minified version
+import JSONP from "https://unpkg.com/safe-jsonp/dist/safe-jsonp.esm.min.js"
 ```
-## Functional diagram
-Sandbox mode: 
-
-![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/master/public/safe-jsonp.png)
 
 ## More examples
 ##### additional options:
@@ -170,7 +162,10 @@ Returns a promise or JSON instance depending on the presence of a callback argum
   - `parseURL(url: String): URL|Object` parse URL into components
   - `parseParams(paramsStr: String): Object` parse URL params string eg. `a=1&b=2` to params object `{a:1, b:2}`
   - `encodeParams(params: Object): String` encode params object to string
-  
+## Functional diagram
+Sandbox mode: 
+
+![Sandbox functional diagram](https://github.com/DigitalBrainJS/safe-jsonp/raw/master/public/safe-jsonp.png)  
 ## Contribution
  Feel free to fork, open issues, enhance or create pull requests. 
 ## License

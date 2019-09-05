@@ -90,7 +90,7 @@ const webserver = () => {
 };
 
 const buildTask = createBuildTask(ENTRY_FILE, {exportName: EXPORT_NAME, toES5: true, minify: true});
-const buildTaskES = createBuildTask(ENTRY_FILE, {format: 'esm'});
+const buildTaskES = createBuildTask(ENTRY_FILE, {format: 'esm', minify: true});
 const buildTests = createBuildTask(`test/${BASE_NAME}.spec.js`, {
     taskTargetName: 'test',
     format: 'cjs',
