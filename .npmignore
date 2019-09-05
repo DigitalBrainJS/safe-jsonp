@@ -1,9 +1,4 @@
-/node_modules/
-/.idea/
-/.babelrc
-/public/
-/test/
-/src/
-/trash/
-/gulpfile.js
-/.travis.yml
+*
+!index.js
+!esm.js
+!dist/**
